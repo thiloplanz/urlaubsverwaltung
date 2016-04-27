@@ -17,6 +17,8 @@ import org.synyx.urlaubsverwaltung.core.application.service.VacationTypeService;
 import org.synyx.urlaubsverwaltung.core.period.DayLength;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.person.Role;
+import org.synyx.urlaubsverwaltung.core.settings.Settings;
+import org.synyx.urlaubsverwaltung.core.settings.SettingsService;
 import org.synyx.urlaubsverwaltung.core.sicknote.SickNoteCategory;
 import org.synyx.urlaubsverwaltung.core.sicknote.SickNoteType;
 import org.synyx.urlaubsverwaltung.core.sicknote.SickNoteTypeService;
@@ -65,6 +67,9 @@ public class TestDataCreationService {
     @Autowired
     private DepartmentDataProvider departmentDataProvider;
 
+    @Autowired
+    private SettingsService settingsService;
+
     private Person boss;
     private Person office;
 
@@ -72,6 +77,13 @@ public class TestDataCreationService {
     public void createTestData() throws NoSuchAlgorithmException {
 
         LOG.info("STARTING CREATION OF TEST DATA --------------------------------------------------------------------");
+
+        // Activate overtime management for development purpose
+        Settings settings = settingsService.getSettings();
+        if (!settings.getWorkingTimeSettings().isOvertimeActive()) {
+            settings.getWorkingTimeSettings().setOvertimeActive(true);
+            settingsService.save(settings);
+        }
 
         // Users to be able to sign in with
         Person user = personDataProvider.createTestPerson(TestUser.USER.getLogin(), PASSWORD, "Klaus", "Müller",

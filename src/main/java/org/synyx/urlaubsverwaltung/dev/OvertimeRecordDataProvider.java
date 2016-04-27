@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 import org.synyx.urlaubsverwaltung.core.overtime.Overtime;
 import org.synyx.urlaubsverwaltung.core.overtime.OvertimeService;
 import org.synyx.urlaubsverwaltung.core.person.Person;
-import org.synyx.urlaubsverwaltung.core.settings.Settings;
-import org.synyx.urlaubsverwaltung.core.settings.SettingsService;
 
 import java.math.BigDecimal;
 
@@ -28,14 +26,9 @@ class OvertimeRecordDataProvider {
     private final OvertimeService overtimeService;
 
     @Autowired
-    OvertimeRecordDataProvider(OvertimeService overtimeService, SettingsService settingsService) {
+    OvertimeRecordDataProvider(OvertimeService overtimeService) {
 
         this.overtimeService = overtimeService;
-
-        // Activate overtime management for development purpose
-        Settings settings = settingsService.getSettings();
-        settings.getWorkingTimeSettings().setOvertimeActive(true);
-        settingsService.save(settings);
     }
 
     Overtime createOvertimeRecord(Person person, DateMidnight startDate, DateMidnight endDate, BigDecimal hours) {
