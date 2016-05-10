@@ -49,6 +49,30 @@ public class SimpleUserDetailsServiceTest {
         simpleUserDetailsService.loadUserByUsername(login);
     }
 
+    @Test
+    public void ensureThatInactiveUserIsLocked() {
+
+        String login = "user";
+        String password = "password";
+
+        Person user = TestDataCreator.createPerson(login);
+        user.setPermissions(Arrays.asList(Role.INACTIVE));
+        user.setPassword(password);
+
+        Mockito.when(personService.getPersonByLogin(login)).thenReturn(Optional.of(user));
+
+        UserDetails userDetails = simpleUserDetailsService.loadUserByUsername(login);
+        Assert.assertNotNull("UserDetails should not be null", userDetails);
+
+        Assert.assertEquals("Wrong username", login, userDetails.getUsername());
+        Assert.assertEquals("Wrong password", password, userDetails.getPassword());
+
+        Assert.assertFalse("INACTIVE Role => locked account", userDetails.isAccountNonLocked());
+        Assert.assertFalse("INACTIVE Role => expired account", userDetails.isAccountNonExpired());
+        Assert.assertFalse("INACTIVE Role => disabled account", userDetails.isEnabled());
+        Assert.assertFalse("INACTIVE Role => expired credentials", userDetails.isCredentialsNonExpired());
+    }
+
 
     @Test
     public void ensureReturnsUserDetailsWithCorrectAuthorities() {
@@ -75,8 +99,14 @@ public class SimpleUserDetailsServiceTest {
 
         Assert.assertEquals("Wrong number of authorities", 2, authorities.size());
         Assert.assertTrue("No authority for user role found",
-            SecurityTestUtil.authorityForRoleExists(authorities, Role.USER));
+                SecurityTestUtil.authorityForRoleExists(authorities, Role.USER));
         Assert.assertTrue("No authority for office role found",
-            SecurityTestUtil.authorityForRoleExists(authorities, Role.OFFICE));
+                SecurityTestUtil.authorityForRoleExists(authorities, Role.OFFICE));
+
+        Assert.assertTrue("locked account", userDetails.isAccountNonLocked());
+        Assert.assertTrue("expired account", userDetails.isAccountNonExpired());
+        Assert.assertTrue("disabled account", userDetails.isEnabled());
+        Assert.assertTrue("expired credentials", userDetails.isCredentialsNonExpired());
+
     }
 }

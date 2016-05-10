@@ -2,6 +2,7 @@ package org.synyx.urlaubsverwaltung.security;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,6 +37,9 @@ public class SimpleAuthenticationProvider implements AuthenticationProvider {
         if (user == null) {
             throw new UsernameNotFoundException("No authentication possible for user = " + username);
         }
+
+        if (!user.isEnabled())
+            throw new DisabledException("User "+username+" has been deactivated.");
 
         if (encoder.matches(rawPassword, user.getPassword())) {
             return new UsernamePasswordAuthenticationToken(username, user.getPassword(), user.getAuthorities());
