@@ -130,6 +130,23 @@
     color: #7B7B7B;
 }
 
+/* need to force rows to be 40px high to match the staff name labels
+ http://stackoverflow.com/a/30105632/14955
+ */
+
+.datepicker-week table.datepicker-table td {
+    position: relative;
+    height: 40px;
+    width: 40px;
+    overflow: hidden;
+    background: none;
+}
+.datepicker-week table.datepicker-table td span {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 
 .datepicker-table {
     border: none;
@@ -145,7 +162,6 @@
 }
 
 .datepicker-table td {
-    /*background: url("../images/schraffur.png");*/
     border: 1px solid #FFF;
     background: linear-gradient(rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.01)), url("../images/schraffur.png");
 }
