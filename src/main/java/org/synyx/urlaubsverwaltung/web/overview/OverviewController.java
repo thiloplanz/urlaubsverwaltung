@@ -26,7 +26,6 @@ import org.synyx.urlaubsverwaltung.core.account.service.VacationDaysService;
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.application.domain.ApplicationStatus;
 import org.synyx.urlaubsverwaltung.core.application.service.ApplicationService;
-import org.synyx.urlaubsverwaltung.core.calendar.WorkDaysService;
 import org.synyx.urlaubsverwaltung.core.department.Department;
 import org.synyx.urlaubsverwaltung.core.department.DepartmentService;
 import org.synyx.urlaubsverwaltung.core.overtime.OvertimeService;
@@ -36,6 +35,7 @@ import org.synyx.urlaubsverwaltung.core.settings.SettingsService;
 import org.synyx.urlaubsverwaltung.core.sicknote.SickNote;
 import org.synyx.urlaubsverwaltung.core.sicknote.SickNoteService;
 import org.synyx.urlaubsverwaltung.core.util.DateUtil;
+import org.synyx.urlaubsverwaltung.core.workingtime.WorkDaysService;
 import org.synyx.urlaubsverwaltung.security.SessionService;
 import org.synyx.urlaubsverwaltung.web.ControllerConstants;
 import org.synyx.urlaubsverwaltung.web.application.ApplicationForLeave;
@@ -183,7 +183,7 @@ public class OverviewController {
 
         if (!applications.isEmpty()) {
             ImmutableList<ApplicationForLeave> applicationsForLeave = FluentIterable.from(applications)
-                .transform(input -> new ApplicationForLeave(input, calendarService))
+                    .transform(input -> new ApplicationForLeave(input, calendarService))
                     .toSortedList((o1, o2) -> {
                         // show latest applications at first
                         return o2.getStartDate().compareTo(o1.getStartDate());
