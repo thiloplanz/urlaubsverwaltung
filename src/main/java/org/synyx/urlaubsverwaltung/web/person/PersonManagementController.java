@@ -14,14 +14,20 @@ import org.springframework.ui.Model;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Errors;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import org.synyx.urlaubsverwaltung.core.department.DepartmentService;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.person.PersonService;
 import org.synyx.urlaubsverwaltung.security.SecurityRules;
 import org.synyx.urlaubsverwaltung.web.DateMidnightPropertyEditor;
 import org.synyx.urlaubsverwaltung.web.DecimalNumberPropertyEditor;
+import org.synyx.urlaubsverwaltung.web.department.DepartmentConstants;
 
 import java.math.BigDecimal;
 
@@ -37,6 +43,9 @@ public class PersonManagementController {
 
     @Autowired
     private PersonService personService;
+
+    @Autowired
+    DepartmentService departmentService;
 
     @Autowired
     private PersonValidator validator;
@@ -61,8 +70,9 @@ public class PersonManagementController {
 
     @PreAuthorize(SecurityRules.IS_OFFICE)
     @RequestMapping(value = "/staff", method = RequestMethod.POST)
-    public String newPerson(@ModelAttribute(PersonConstants.PERSON_ATTRIBUTE) Person person, Errors errors,
-        RedirectAttributes redirectAttributes) {
+    public String newPerson(@ModelAttribute(PersonConstants.PERSON_ATTRIBUTE) Person person,
+                            Errors errors,
+                            RedirectAttributes redirectAttributes) {
 
         validator.validate(person, errors);
 
@@ -80,12 +90,17 @@ public class PersonManagementController {
 
     @PreAuthorize(SecurityRules.IS_OFFICE)
     @RequestMapping(value = "/staff/{personId}/edit", method = RequestMethod.GET)
-    public String editPersonForm(@PathVariable("personId") Integer personId, Model model)
+    public String editPersonForm(@PathVariable("personId") Integer personId,
+                                 Model model)
         throws UnknownPersonException {
 
         Person person = personService.getPersonByID(personId).orElseThrow(() -> new UnknownPersonException(personId));
 
         model.addAttribute(PersonConstants.PERSON_ATTRIBUTE, person);
+        model.addAttribute(DepartmentConstants.DEPARTMENTS_ATTRIBUTE,
+                                departmentService.getManagedDepartmentsOfDepartmentHead(person));
+        model.addAttribute(DepartmentConstants.SECOND_STAGE_DEPARTMENTS_ATTRIBUTE,
+                departmentService.getManagedDepartmentsOfSecondStageAuthority(person));
 
         return PersonConstants.PERSON_FORM_JSP;
     }
