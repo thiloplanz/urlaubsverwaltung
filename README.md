@@ -8,9 +8,10 @@
     * [Blog Posts](#blog-posts)
     * [FAQ](#faq)
     * [Berechtigungen](#berechtigungen)
+    * [REST-Schnittstelle](#rest-schnittstelle)
 * [Installation](#installation)
 * [Entwicklung](#entwicklung)
-* [Hinweise zu Versionen](#hinweise-zu-versionen)
+* [Changelog](CHANGELOG.md)
 * [Technologien](#technologien)
 * [Lizenz](#lizenz)
 
@@ -67,6 +68,11 @@ In der Urlaubsverwaltung gibt es aktuell folgende Arten von Berechtigungen:
 beantragen/stornieren und Krankmeldungen pflegen
 
 Eine aktive Person kann eine oder mehrere Rollen innehaben.
+
+#### REST-Schnittstelle
+
+Die Urlaubsverwaltung besitzt einen sich selbst beschreibende REST-Schnittstelle.
+Diese kann mit über `/api/` aufgerufen werden, z.Bsp. hier: http://urlaubsverwaltung-demo.synyx.de/api/index.html
 
 ---
 
@@ -174,6 +180,13 @@ Um Active Directory zur Authentifizierung zu nutzen, muss die Property `auth` in
 `activeDirectory` gesetzt werden:
 
 <pre>auth=activeDirectory</pre>
+
+##### Synchronisation der User-Datenbank
+
+Ab Version 2.14 werden die LDAP/AD-Benutzer nicht mehr automatisch in die Urlaubsverwaltung synchronisiert, sondern nur noch beim Login des jeweiligen Users in die Datenbank übertragen.
+Man kann die automatische Synchronisation aller Benutzer aktivieren indem man in der Konfiguration das Property `uv.security.ldap.sync` bzw. `uv.security.activeDirectory.sync` auf `true` gesetzt wird:
+
+<pre>uv.security.ldap.sync=true</pre> bzw. <pre>uv.security.activeDirectory.sync=true</pre>
 
 ---
 
@@ -287,10 +300,7 @@ tun kann.](UV_WITH_DOCKER.md)
 
 ## Hinweise zu Versionen
 
-#### Version 2.12.0
-
-Ab dieser Version ist die Anwendung eine [Spring Boot](http://projects.spring.io/spring-boot/) Anwendung, d.h. sie wird
-nicht mehr als WAR in einem Tomcat installiert, sondern als JAR ausgeführt.
+Alle Änderungen an der Anwendung werden im Changelog gepflegt: [Changelog](CHANGELOG.md)
 
 ---
 

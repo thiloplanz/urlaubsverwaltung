@@ -1,10 +1,12 @@
 
 package org.synyx.urlaubsverwaltung.core.cron;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateMidnight;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ import java.util.stream.Collectors;
 @Service
 public class CronMailService {
 
+    private static final Logger LOG = Logger.getLogger(CronMailService.class);
+
     private final ApplicationService applicationService;
     private final SettingsService settingsService;
     private final SickNoteService sickNoteService;
@@ -52,6 +56,8 @@ public class CronMailService {
 
         List<SickNote> sickNotes = sickNoteService.getSickNotesReachingEndOfSickPay();
 
+        LOG.info("Found " + sickNotes.size() + " sick notes reaching end of sick pay");
+
         for (SickNote sickNote : sickNotes) {
             mailService.sendEndOfSickPayNotification(sickNote);
         }
@@ -71,11 +77,19 @@ public class CronMailService {
                     .filter(isLongWaitingApplications())
                     .collect(Collectors.toList());
 
-            mailService.sendRemindForWaitingApplicationsReminderNotification(longWaitingApplications);
+            if (!longWaitingApplications.isEmpty()) {
+                LOG.info(String.format("%d long waiting applications found. Sending Notification...", longWaitingApplications.size()));
 
-            for (Application longWaitingApplication : longWaitingApplications) {
-                longWaitingApplication.setRemindDate(DateMidnight.now());
-                applicationService.save(longWaitingApplication);
+                mailService.sendRemindForWaitingApplicationsReminderNotification(longWaitingApplications);
+
+                for (Application longWaitingApplication : longWaitingApplications) {
+                    longWaitingApplication.setRemindDate(DateMidnight.now());
+                    applicationService.save(longWaitingApplication);
+                }
+
+                LOG.info("Sending Notification for waiting applications finished.");
+            } else {
+                LOG.info("No long waiting application found.");
             }
 
         }
@@ -99,7 +113,7 @@ public class CronMailService {
                 return minDateForNotification.isBeforeNow();
             } else {
                 // true -> not reminded today
-                // false -> allready remined today
+                // false -> already reminded today
                 return !remindDate.isEqual(DateMidnight.now());
             }
         };
