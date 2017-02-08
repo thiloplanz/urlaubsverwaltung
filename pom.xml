@@ -4,7 +4,7 @@
 
     <groupId>org.synyx</groupId>
     <artifactId>urlaubsverwaltung</artifactId>
-    <version>2.23.0-burtgummer-SNAPSHOT</version>
+    <version>2.23.0-yados-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Urlaubsverwaltung</name>
