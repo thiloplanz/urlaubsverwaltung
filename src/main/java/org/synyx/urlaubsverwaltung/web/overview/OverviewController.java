@@ -1,25 +1,18 @@
 package org.synyx.urlaubsverwaltung.web.overview;
 
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
+import java.util.List;
+import java.util.Optional;
 
 import org.joda.time.DateMidnight;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.access.AccessDeniedException;
-
 import org.springframework.stereotype.Controller;
-
 import org.springframework.ui.Model;
-
 import org.springframework.util.StringUtils;
-
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import org.synyx.urlaubsverwaltung.core.account.domain.Account;
 import org.synyx.urlaubsverwaltung.core.account.service.AccountService;
 import org.synyx.urlaubsverwaltung.core.account.service.VacationDaysService;
@@ -49,12 +42,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 
 /**
- * Controller to display the personal overview page with basic information about overtime, applications for leave and
- * sick notes.
+ * Controller to display the personal overview page with basic information about
+ * overtime, applications for leave and sick notes.
  *
- * @author  Aljona Murygina - murygina@synyx.de
+ * @author Aljona Murygina - murygina@synyx.de
  */
 @Controller
 @RequestMapping("/web")
@@ -62,6 +57,9 @@ public class OverviewController {
 
     @Autowired
     private PersonService personService;
+
+    @Autowired
+    private DepartmentService departmentService;
 
     @Autowired
     private AccountService accountService;
@@ -87,12 +85,9 @@ public class OverviewController {
     @Autowired
     private SettingsService settingsService;
 
-    @Autowired
-    private DepartmentService departmentService;
-
     @RequestMapping(value = "/overview", method = RequestMethod.GET)
     public String showOverview(
-        @RequestParam(value = ControllerConstants.YEAR_ATTRIBUTE, required = false) String year) {
+            @RequestParam(value = ControllerConstants.YEAR_ATTRIBUTE, required = false) String year) {
 
         Person user = sessionService.getSignedInUser();
 
@@ -103,30 +98,30 @@ public class OverviewController {
         return "redirect:/web/staff/" + user.getId() + "/overview";
     }
 
-
     @RequestMapping(value = "/staff/{personId}/overview", method = RequestMethod.GET)
     public String showOverview(@PathVariable("personId") Integer personId,
-        @RequestParam(value = ControllerConstants.YEAR_ATTRIBUTE, required = false) Integer year,
-        @RequestParam(value = ControllerConstants.TIMELINE_DEPARTMENT_ATTRIBUTE, required = false) Integer timelineDepartment,
-        Model model)
-        throws UnknownPersonException, AccessDeniedException {
+                               @RequestParam(value = ControllerConstants.YEAR_ATTRIBUTE, required = false) Integer year,
+                               @RequestParam(value = ControllerConstants.TIMELINE_DEPARTMENT_ATTRIBUTE, required = false) Integer timelineDepartment,
+                               Model model)
+            throws UnknownPersonException, AccessDeniedException {
 
         Person person = personService.getPersonByID(personId).orElseThrow(() -> new UnknownPersonException(personId));
         Person signedInUser = sessionService.getSignedInUser();
 
         if (!sessionService.isSignedInUserAllowedToAccessPersonData(signedInUser, person)) {
-            throw new AccessDeniedException(String.format(
-                    "User '%s' has not the correct permissions to access the overview page of user '%s'",
-                    signedInUser.getLoginName(), person.getLoginName()));
+            throw new AccessDeniedException(
+                    String.format("User '%s' has not the correct permissions to access the overview page of user '%s'",
+                            signedInUser.getLoginName(), person.getLoginName()));
         }
+
 
         List<Department> relevantDepartments = departmentService.getRelevantDepartments(signedInUser);
 
-        if (timelineDepartment != null){
+        if (timelineDepartment != null) {
             Optional<Department> department = relevantDepartments.stream().filter(d -> d.getId().equals(timelineDepartment)).findFirst();
-            if (department.isPresent()){
+            if (department.isPresent()) {
                 model.addAttribute(ControllerConstants.TIMELINE_DEPARTMENT_ATTRIBUTE, department.get());
-            }else{
+            } else {
                 throw new AccessDeniedException(String.format(
                         "User '%s' has not the correct permissions to access the department timeline of department '%d'",
                         signedInUser.getLoginName(), timelineDepartment));
@@ -134,7 +129,7 @@ public class OverviewController {
         }
 
         // if we are looking at someone else's page, show that person's department (not ours)
-        if (!signedInUser.getId().equals(personId)){
+        if (!signedInUser.getId().equals(personId)) {
             relevantDepartments = departmentService.getRelevantDepartments(person);
         }
         Collections.sort(relevantDepartments, (a, b) -> a.getName().compareTo(b.getName()));
@@ -149,21 +144,22 @@ public class OverviewController {
         prepareSettings(model);
 
         model.addAttribute(ControllerConstants.YEAR_ATTRIBUTE, DateMidnight.now().getYear());
+        model.addAttribute("currentYear", DateMidnight.now().getYear());
+        model.addAttribute("currentMonth", DateMidnight.now().getMonthOfYear());
 
         return "person/overview";
     }
-
 
     private void prepareSickNoteList(Person person, int year, Model model) {
 
         List<SickNote> sickNotes = sickNoteService.getByPersonAndPeriod(person, DateUtil.getFirstDayOfYear(year),
                 DateUtil.getLastDayOfYear(year));
 
-        List<ExtendedSickNote> extendedSickNotes = FluentIterable.from(sickNotes).transform(input ->
-                        new ExtendedSickNote(input, calendarService)).toSortedList((o1, o2) -> {
-                // show latest sick notes at first
-                return o2.getStartDate().compareTo(o1.getStartDate());
-            });
+        List<ExtendedSickNote> extendedSickNotes = FluentIterable.from(sickNotes)
+                .transform(input -> new ExtendedSickNote(input, calendarService)).toSortedList((o1, o2) -> {
+                    // show latest sick notes at first
+                    return o2.getStartDate().compareTo(o1.getStartDate());
+                });
 
         model.addAttribute("sickNotes", extendedSickNotes);
 
@@ -171,20 +167,17 @@ public class OverviewController {
         model.addAttribute("sickDaysOverview", sickDaysOverview);
     }
 
-
     private void prepareApplications(Person person, int year, Model model) {
 
         // get the person's applications for the given year
-        List<Application> applications = FluentIterable.from(
-                    applicationService.getApplicationsForACertainPeriodAndPerson(DateUtil.getFirstDayOfYear(year),
+        List<Application> applications = FluentIterable
+                .from(applicationService.getApplicationsForACertainPeriodAndPerson(DateUtil.getFirstDayOfYear(year),
                         DateUtil.getLastDayOfYear(year), person))
-                .filter(input -> !input.hasStatus(ApplicationStatus.REVOKED))
-                .toList();
+                .filter(input -> !input.hasStatus(ApplicationStatus.REVOKED)).toList();
 
         if (!applications.isEmpty()) {
             ImmutableList<ApplicationForLeave> applicationsForLeave = FluentIterable.from(applications)
-                    .transform(input -> new ApplicationForLeave(input, calendarService))
-                    .toSortedList((o1, o2) -> {
+                    .transform(input -> new ApplicationForLeave(input, calendarService)).toSortedList((o1, o2) -> {
                         // show latest applications at first
                         return o2.getStartDate().compareTo(o1.getStartDate());
                     });
@@ -199,7 +192,6 @@ public class OverviewController {
         model.addAttribute("overtimeLeft", overtimeService.getLeftOvertimeForPerson(person));
     }
 
-
     private void prepareHolidayAccounts(Person person, int year, Model model) {
 
         // get person's holidays account and entitlement for the given year
@@ -212,9 +204,9 @@ public class OverviewController {
         }
     }
 
-
     private void prepareSettings(Model model) {
 
         model.addAttribute("settings", settingsService.getSettings());
     }
+
 }
