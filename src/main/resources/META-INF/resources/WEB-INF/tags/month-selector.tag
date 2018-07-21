@@ -4,7 +4,7 @@
 <%@attribute name="month" type="java.lang.String" required="true" %>
 
 <div id="month-selection" class="legend-dropdown dropdown">
-    <a id="monthDropdownLabel" data-target="#" href="#" data-toggle="dropdown"
+    <a id="monthDropdownLabel" href="#" data-toggle="dropdown"
        aria-haspopup="true" role="button" aria-expanded="false">
         <span class='labelText'><c:out value="${month}" /></span><span class="caret"></span>
     </a>

@@ -313,7 +313,7 @@ $(function() {
                 if (c) {
                     return $.Deferred().resolve( c );
                 } else {
-                    return fetch('/absences', {department: departmentId, year: year}).success( cacheAbsences(year) );
+                    return fetch('/absences', {department: departmentId, year: year}).done( cacheAbsences(year) );
                 }
             },
 

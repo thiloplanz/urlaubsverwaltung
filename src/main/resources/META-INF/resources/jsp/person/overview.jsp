@@ -181,13 +181,13 @@
                      <div class="legend-dropdown dropdown">
                              <c:choose>
                                 <c:when test="${timelineDepartment == null}">
-                                    <a id="calendar-selector" name="calendar-selector" data-target="#" href="#" data-toggle="dropdown"
+                                    <a id="calendar-selector" name="calendar-selector" href="#" data-toggle="dropdown"
                                                              aria-haspopup="true" role="button" aria-expanded="false">
                                         <spring:message code="overview.calendar.title" /> <c:out value="${person.niceName}" /><span class="caret"></span>
                                     </a>
                                 </c:when>
                                 <c:otherwise>
-                                    <a id="calendar-selector" name="calendar-selector" data-target="#" href="#" data-toggle="dropdown"
+                                    <a id="calendar-selector" name="calendar-selector" href="#" data-toggle="dropdown"
                                                                                                  aria-haspopup="true" role="button" aria-expanded="false">
                                         <spring:message code="overview.calendar.title" /> <c:out value="${timelineDepartment.name}" /><span class="caret"></span>
                                     </a>
