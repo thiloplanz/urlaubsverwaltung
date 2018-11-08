@@ -244,14 +244,14 @@ public class PersonController {
             if (account.isPresent()) {
                 Account holidaysAccount = account.get();
                 accounts.put(person, holidaysAccount);
-                vacationDaysLeftMap.put(person, vacationDaysService.getVacationDaysLeft(holidaysAccount));
+                vacationDaysLeftMap.put(person, vacationDaysService.getVacationDaysLeft(holidaysAccount, accountService.getHolidaysAccount(year+1, person)));
             }
         }
 
         model.addAttribute(PersonConstants.PERSONS_ATTRIBUTE, persons);
         model.addAttribute("accounts", accounts);
         model.addAttribute("vacationDaysLeftMap", vacationDaysLeftMap);
-        model.addAttribute(PersonConstants.BEFORE_APRIL_ATTRIBUTE, DateUtil.isBeforeApril(DateMidnight.now()));
+        model.addAttribute(PersonConstants.BEFORE_APRIL_ATTRIBUTE, DateUtil.isBeforeApril(DateMidnight.now(), year));
         model.addAttribute(ControllerConstants.YEAR_ATTRIBUTE, year);
         model.addAttribute("now", DateMidnight.now());
 
