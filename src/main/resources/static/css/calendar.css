@@ -220,6 +220,20 @@
 .datepicker-day-personal-holiday.datepicker-day-half.datepicker-day-past.datepicker-day-status-ALLOWED {
     background: linear-gradient(-36deg, #43C83C 50%, #EFEFEF 50%);
 }
+.datepicker-day-personal-holiday.datepicker-day-half.datepicker-day-personal-holiday-OVERTIME {
+    background: linear-gradient(-36deg, cyan 50%, #EFEFEF 50%);
+}
+
+.datepicker-day-personal-holiday.datepicker-day-half.datepicker-day-past.datepicker-day-personal-holiday-OVERTIME {
+    background: linear-gradient(-36deg, cyan 50%, #EFEFEF 50%);
+}
+
+.datepicker-day-personal-holiday.datepicker-day-half.datepicker-day-status-ALLOWED.datepicker-day-personal-holiday-OVERTIME,
+.datepicker-day-personal-holiday.datepicker-day-half.datepicker-day-past.datepicker-day-status-ALLOWED.datepicker-day-personal-holiday-OVERTIME {
+    background: linear-gradient(-36deg, purple 50%, #EFEFEF 50%);
+}
+
+
 
 
 .datepicker-day:not([data-datepicker-selectable=false]) {
@@ -244,10 +258,21 @@
     background-color: #FFEDA0;
 }
 
+.datepicker-day-personal-holiday.datepicker-day-personal-holiday-OVERTIME {
+    background-color: cyan;
+}
+
+
 .datepicker-day-personal-holiday:not(.datepicker-day-sick-note).datepicker-day-status-ALLOWED {
     background-color: #43C83C;
     color: #7B7B7B;
 }
+
+.datepicker-day-personal-holiday:not(.datepicker-day-sick-note).datepicker-day-status-ALLOWED.datepicker-day-personal-holiday-OVERTIME {
+    background-color: purple;
+}
+
+
 
 .datepicker-day:not([data-datepicker-selectable=false]).datepicker-day-personal-holiday:hover {
     color: #FF881F;
@@ -271,6 +296,15 @@
     background: none;
     background-color: #43C83C;
 }
+
+.datepicker-day-selected.datepicker-day-personal-holiday.datepicker-day-half.datepicker-day-personal-holiday-OVERTIME {
+    background-color: cyan
+}
+
+.datepicker-day-selected.datepicker-day-personal-holiday.datepicker-day-half.datepicker-day-personal-holiday-OVERTIME.datepicker-day-status-ALLOWED {
+    background-color: purple
+}
+
 
 .datepicker-day-sick-note.datepicker-day-half {
     background: linear-gradient(-36deg, #FFC5BF 50%, #EFEFEF 50%);
@@ -299,6 +333,11 @@
 .datepicker-day-personal-holiday:not(.datepicker-day-sick-note).datepicker-day-half.datepicker-day-status-ALLOWED {
     background: linear-gradient(-36deg, #43C83C 50%, #EFEFEF 50%);
 }
+
+.datepicker-day-personal-holiday:not(.datepicker-day-sick-note).datepicker-day-half.datepicker-day-status-ALLOWED.datepicker-day-personal-holiday-OVERTIME {
+    background: linear-gradient(-36deg, purple 50%, #EFEFEF 50%);
+}
+
 
 /**************************************************************************
 
