@@ -22,10 +22,8 @@ $(function() {
         dayPast               : 'datepicker-day-past',
         dayHalf               : 'datepicker-day-half',
         dayPublicHoliday      : 'datepicker-day-public-holiday',
-        dayHalfPublicHoliday  : 'datepicker-day-half-public-holiday',
-        dayPersonalHoliday    : 'datepicker-day-personal-holiday',
-        dayHalfPersonalHoliday: 'datepicker-day-half-personal-holiday',
-        daySickDay            : 'datepicker-day-sick-note',
+        dayPersonalHoliday    : 'datepicker-day-personal-holiday datepicker-day-personal-holiday-{{category}}',
+        daySickDay            : 'datepicker-day-sick-note datepicker-day-sick-note-{{category}}',
         dayStatus             : 'datepicker-day-status-{{status}}',
         next                  : 'datepicker-next',
         prev                  : 'datepicker-prev',
@@ -82,6 +80,9 @@ $(function() {
             },
             status : function(date, personId) {
                 return holidayService.getStatus(date, personId);
+            },
+            absenceCategory: function(date, personId) {
+                return holidayService.getAbsenceCategory(date, personId);
             }
         };
 
@@ -262,7 +263,7 @@ $(function() {
 
                 var year = date.year();
                 var formattedDate = date.format('YYYY-MM-DD');
-                 var holiday = CACHE_findDate('holiday', year, formattedDate, personId);
+                var holiday = CACHE_findDate('holiday', year, formattedDate, personId);
 
                 if(holiday) {
                   return holiday.type;
@@ -277,6 +278,26 @@ $(function() {
                 return '';
 
             },
+
+            getAbsenceCategory: function (date, personId) {
+
+                var year = date.year();
+                var formattedDate = date.format('YYYY-MM-DD');
+                var holiday = CACHE_findDate('holiday', year, formattedDate, personId);
+
+                if(holiday) {
+                  return holiday.category;
+                }
+
+                var sickDay = CACHE_findDate('sick', year, formattedDate, personId);
+
+                if(sickDay) {
+                    return sickDay.category;
+                }
+
+                return '';
+            },
+
 
             /**
              *
@@ -489,13 +510,14 @@ $(function() {
 
             function classes() {
                 var status = assert.status(date, personId)
+                var category = assert.absenceCategory(date, personId)
                 return [
                     assert.isToday           (date) ? CSS.dayToday           : '',
                     assert.isWeekend         (date) ? CSS.dayWeekend         : '',
                     assert.isPast            (date) ? CSS.dayPast            : '',
                     assert.isPublicHoliday   (date, personId) ? CSS.dayPublicHoliday   : '',
-                    assert.isPersonalHoliday (date, personId) ? CSS.dayPersonalHoliday : '',
-                    assert.isSickDay         (date, personId) ? CSS.daySickDay         : '',
+                    assert.isPersonalHoliday (date, personId) ? CSS.dayPersonalHoliday.replace("{{category}}", category) : '',
+                    assert.isSickDay         (date, personId) ? CSS.daySickDay.replace("{{category}}", category)         : '',
                     assert.isHalfDay         (date, personId) ? CSS.dayHalf            : '',
                     status             ? CSS.dayStatus.replace("{{status}}", status)   : ''
                 ].join(' ');

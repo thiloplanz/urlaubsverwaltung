@@ -97,6 +97,7 @@
 /* INTERACTION / HOVER */
 .ui-datepicker-calendar td a:hover,
 .ui-datepicker-calendar td.halfworkday a:hover,
+.ui-datepicker-calendar td.holiday.holiday-OVERTIME.halfworkday a:hover,
 .ui-datepicker-calendar .ui-state-default.ui-state-active {
   color: #FAFAFA !important;
   background: #7B7B7B !important;
