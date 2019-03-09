@@ -681,7 +681,7 @@ $(function() {
 
                 // to load data for the new (invisible) next week
                 var date = moment($week.data(DATA.startDate), 'YYYY-MM-DD')
-                    .add('d', 7);
+                    .add('d', 13); // go to the last day of the week, it may be in a new year
 
                 $.when(
                     holidayService.fetchAbsences   ( date.year() )
@@ -786,6 +786,10 @@ $(function() {
 
             jumpTo: function(date, personIds){
                  $.when( holidayService.fetchAbsences   ( date.year() ))
+                 .then(function() {
+                    // if we are in December, also fetch the next year
+                    return holidayService.fetchAbsences ( moment(date).add("d", 30).year() )
+                 })
                  .then(function(){ view.display(date, personIds); });
             }
         };
