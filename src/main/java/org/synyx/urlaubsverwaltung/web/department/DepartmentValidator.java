@@ -1,12 +1,9 @@
 package org.synyx.urlaubsverwaltung.web.department;
 
 import org.springframework.stereotype.Component;
-
 import org.springframework.util.StringUtils;
-
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-
 import org.synyx.urlaubsverwaltung.core.department.Department;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.person.Role;
@@ -16,8 +13,6 @@ import java.util.List;
 
 /**
  * Validates the content of {@link Department}s.
- *
- * @author  Daniel Hammann - <hammann@synyx.de>
  */
 @Component
 public class DepartmentValidator implements Validator {

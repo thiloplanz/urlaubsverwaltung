@@ -1,35 +1,29 @@
 package org.synyx.urlaubsverwaltung.core.overtime;
 
-import org.apache.log4j.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
-
 import org.springframework.util.Assert;
-
 import org.synyx.urlaubsverwaltung.core.application.service.ApplicationService;
 import org.synyx.urlaubsverwaltung.core.mail.MailService;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.util.DateUtil;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
-
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 
 /**
- * @author  Aljona Murygina - murygina@synyx.de
  * @since  2.11.0
  */
 @Transactional
 @Service
 public class OvertimeServiceImpl implements OvertimeService {
 
-    private static final Logger LOG = Logger.getLogger(OvertimeServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OvertimeServiceImpl.class);
 
     private final OvertimeDAO overtimeDAO;
     private final OvertimeCommentDAO commentDAO;
@@ -77,14 +71,13 @@ public class OvertimeServiceImpl implements OvertimeService {
         // save comment
         OvertimeAction action = isNewOvertime ? OvertimeAction.CREATED : OvertimeAction.EDITED;
         OvertimeComment overtimeComment = new OvertimeComment(author, overtime, action);
-        comment.ifPresent((text) -> overtimeComment.setText(text));
+        comment.ifPresent(overtimeComment::setText);
 
         commentDAO.save(overtimeComment);
 
         mailService.sendOvertimeNotification(overtime, overtimeComment);
 
-        String loggingAction = isNewOvertime ? "Created" : "Updated";
-        LOG.info(loggingAction + " overtime record: " + overtime.toString());
+        LOG.info("{} overtime record: {}", isNewOvertime ? "Created" : "Updated", overtime);
 
         return overtime;
     }
@@ -95,7 +88,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 
         Assert.notNull(id, "ID must be given.");
 
-        return Optional.ofNullable(overtimeDAO.findOne(id));
+        return overtimeDAO.findById(id);
     }
 
 
@@ -142,10 +135,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 
         Optional<BigDecimal> totalOvertime = Optional.ofNullable(overtimeDAO.calculateTotalHoursForPerson(person));
 
-        if (totalOvertime.isPresent()) {
-            return totalOvertime.get();
-        }
+        return totalOvertime.orElse(BigDecimal.ZERO);
 
-        return BigDecimal.ZERO;
     }
 }

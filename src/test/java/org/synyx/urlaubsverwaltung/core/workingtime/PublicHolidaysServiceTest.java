@@ -3,27 +3,23 @@ package org.synyx.urlaubsverwaltung.core.workingtime;
 
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTimeConstants;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.mockito.Mockito;
-
 import org.synyx.urlaubsverwaltung.core.period.DayLength;
 import org.synyx.urlaubsverwaltung.core.settings.FederalState;
 import org.synyx.urlaubsverwaltung.core.settings.Settings;
 import org.synyx.urlaubsverwaltung.core.settings.SettingsService;
 
 import java.io.IOException;
-
 import java.math.BigDecimal;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 /**
  * Unit test for {@link PublicHolidaysService}.
- *
- * @author  Aljona Murygina
  */
 public class PublicHolidaysServiceTest {
 
@@ -33,12 +29,12 @@ public class PublicHolidaysServiceTest {
     private SettingsService settingsService;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
 
-        settingsService = Mockito.mock(SettingsService.class);
+        settingsService = mock(SettingsService.class);
         publicHolidaysService = new PublicHolidaysService(settingsService);
 
-        Mockito.when(settingsService.getSettings()).thenReturn(new Settings());
+        when(settingsService.getSettings()).thenReturn(new Settings());
     }
 
 
@@ -125,7 +121,7 @@ public class PublicHolidaysServiceTest {
         Settings settings = new Settings();
         settings.getWorkingTimeSettings().setWorkingDurationForChristmasEve(DayLength.FULL);
 
-        Mockito.when(settingsService.getSettings()).thenReturn(settings);
+        when(settingsService.getSettings()).thenReturn(settings);
 
         DateMidnight testDate = new DateMidnight(2013, DateTimeConstants.DECEMBER, 24);
 
@@ -141,7 +137,7 @@ public class PublicHolidaysServiceTest {
         Settings settings = new Settings();
         settings.getWorkingTimeSettings().setWorkingDurationForNewYearsEve(DayLength.FULL);
 
-        Mockito.when(settingsService.getSettings()).thenReturn(settings);
+        when(settingsService.getSettings()).thenReturn(settings);
 
         DateMidnight testDate = new DateMidnight(2013, DateTimeConstants.DECEMBER, 31);
 
@@ -157,7 +153,7 @@ public class PublicHolidaysServiceTest {
         Settings settings = new Settings();
         settings.getWorkingTimeSettings().setWorkingDurationForChristmasEve(DayLength.MORNING);
 
-        Mockito.when(settingsService.getSettings()).thenReturn(settings);
+        when(settingsService.getSettings()).thenReturn(settings);
 
         DateMidnight testDate = new DateMidnight(2013, DateTimeConstants.DECEMBER, 24);
 
@@ -173,7 +169,7 @@ public class PublicHolidaysServiceTest {
         Settings settings = new Settings();
         settings.getWorkingTimeSettings().setWorkingDurationForNewYearsEve(DayLength.NOON);
 
-        Mockito.when(settingsService.getSettings()).thenReturn(settings);
+        when(settingsService.getSettings()).thenReturn(settings);
 
         DateMidnight testDate = new DateMidnight(2013, DateTimeConstants.DECEMBER, 31);
 
@@ -189,7 +185,7 @@ public class PublicHolidaysServiceTest {
         Settings settings = new Settings();
         settings.getWorkingTimeSettings().setWorkingDurationForChristmasEve(DayLength.ZERO);
 
-        Mockito.when(settingsService.getSettings()).thenReturn(settings);
+        when(settingsService.getSettings()).thenReturn(settings);
 
         DateMidnight testDate = new DateMidnight(2013, DateTimeConstants.DECEMBER, 24);
 
@@ -205,7 +201,7 @@ public class PublicHolidaysServiceTest {
         Settings settings = new Settings();
         settings.getWorkingTimeSettings().setWorkingDurationForNewYearsEve(DayLength.ZERO);
 
-        Mockito.when(settingsService.getSettings()).thenReturn(settings);
+        when(settingsService.getSettings()).thenReturn(settings);
 
         DateMidnight testDate = new DateMidnight(2013, DateTimeConstants.DECEMBER, 31);
 

@@ -1,33 +1,24 @@
 package org.synyx.urlaubsverwaltung.core.sicknote.statistics;
 
 import org.joda.time.DateMidnight;
-
 import org.springframework.util.Assert;
-
 import org.synyx.urlaubsverwaltung.core.sicknote.SickNote;
 import org.synyx.urlaubsverwaltung.core.sicknote.SickNoteDAO;
 import org.synyx.urlaubsverwaltung.core.workingtime.WorkDaysService;
 
 import java.math.BigDecimal;
-
 import java.util.List;
 
 
 /**
  * A statistic containing information about sick notes of a year.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public class SickNoteStatistics {
 
     private final DateMidnight created;
-
     private final int year;
-
     private final int totalNumberOfSickNotes;
-
     private final BigDecimal totalNumberOfSickDays;
-
     private final Long numberOfPersonsWithMinimumOneSickNote;
 
     public SickNoteStatistics(int year, SickNoteDAO sickNoteDAO, WorkDaysService calendarService) {

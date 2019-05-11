@@ -1,7 +1,6 @@
 package org.synyx.urlaubsverwaltung.restapi.availability;
 
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,12 +8,10 @@ import java.util.List;
 /**
  * Wrapper class for a list of {@link TimedAbsence} which provides additional utility methods to retrieve information
  * about the list.
- *
- * @author  Timo Eifler - eifler@synyx.de
  */
 class TimedAbsenceSpans {
 
-    private List<TimedAbsence> absencesList;
+    private final List<TimedAbsence> absencesList;
 
     TimedAbsenceSpans(List<TimedAbsence> absencesList) {
 

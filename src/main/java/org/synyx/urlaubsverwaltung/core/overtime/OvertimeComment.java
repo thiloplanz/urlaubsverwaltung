@@ -1,7 +1,6 @@
 package org.synyx.urlaubsverwaltung.core.overtime;
 
 import org.springframework.util.Assert;
-
 import org.synyx.urlaubsverwaltung.core.comment.AbstractComment;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 
@@ -15,7 +14,6 @@ import javax.persistence.ManyToOne;
 /**
  * Recorded comment after executed an overtime action, e.g. create a new overtime record.
  *
- * @author  Aljona Murygina - murygina@synyx.de
  * @since  2.11.0
  */
 @Entity

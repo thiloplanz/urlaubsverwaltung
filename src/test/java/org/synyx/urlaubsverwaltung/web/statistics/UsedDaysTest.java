@@ -2,18 +2,14 @@ package org.synyx.urlaubsverwaltung.web.statistics;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.synyx.urlaubsverwaltung.core.application.domain.ApplicationStatus;
 
 import java.math.BigDecimal;
-
 import java.util.Map;
 
 
 /**
  * Unit test for {@link org.synyx.urlaubsverwaltung.web.statistics.UsedDays}.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public class UsedDaysTest {
 

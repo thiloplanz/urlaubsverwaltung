@@ -1,17 +1,13 @@
 package org.synyx.urlaubsverwaltung.web.sicknote;
 
 import org.springframework.stereotype.Component;
-
 import org.springframework.util.StringUtils;
-
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 
 /**
  * Class for validating {@link org.synyx.urlaubsverwaltung.web.sicknote.SickNoteConvertForm} object.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 @Component
 public class SickNoteConvertFormValidator implements Validator {

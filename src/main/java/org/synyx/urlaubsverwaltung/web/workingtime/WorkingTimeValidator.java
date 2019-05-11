@@ -1,15 +1,12 @@
 package org.synyx.urlaubsverwaltung.web.workingtime;
 
 import org.springframework.stereotype.Component;
-
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 
 /**
  * Validates {@link WorkingTimeForm}.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 @Component
 class WorkingTimeValidator implements Validator {

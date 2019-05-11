@@ -3,15 +3,12 @@ package org.synyx.urlaubsverwaltung.web.statistics;
 import org.synyx.urlaubsverwaltung.core.application.domain.ApplicationStatus;
 
 import java.math.BigDecimal;
-
 import java.util.HashMap;
 import java.util.Map;
 
 
 /**
  * Represents number of days for specific application states.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public class UsedDays {
 

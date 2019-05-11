@@ -2,11 +2,8 @@ package org.synyx.urlaubsverwaltung.core.sync.absence;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
 import org.joda.time.DateTimeZone;
-
 import org.springframework.util.Assert;
-
 import org.synyx.urlaubsverwaltung.core.period.Period;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 
@@ -15,8 +12,6 @@ import java.util.Date;
 
 /**
  * Represents a period of time where a person is not at work.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public class Absence {
 

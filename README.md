@@ -1,5 +1,8 @@
-[![Build Status](https://travis-ci.org/synyx/urlaubsverwaltung.png)](https://travis-ci.org/synyx/urlaubsverwaltung)
-[![Coverage Status](https://coveralls.io/repos/github/synyx/urlaubsverwaltung/badge.svg?branch=master)](https://coveralls.io/github/synyx/urlaubsverwaltung?branch=master)
+[![Build Status](https://img.shields.io/travis/synyx/urlaubsverwaltung.svg)](https://travis-ci.org/synyx/urlaubsverwaltung)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=org.synyx:urlaubsverwaltung&metric=coverage)](https://sonarcloud.io/dashboard?id=org.synyx:urlaubsverwaltung)
+[![Docker Pulls](https://img.shields.io/docker/pulls/synyx/urlaubsverwaltung.svg)](https://hub.docker.com/r/synyx/urlaubsverwaltung)
+[![Total Downloads](https://img.shields.io/github/downloads/synyx/urlaubsverwaltung/total.svg)](https://github.com/synyx/urlaubsverwaltung/releases/latest)
+[![Heroku](https://img.shields.io/badge/%E2%86%91_Deploy_to-Heroku-7056bf.svg)](https://urlaubsverwaltung.herokuapp.com)
 
 ## Urlaubsverwaltung
 
@@ -44,7 +47,7 @@ von Urlaubsanspruch und Anzahl verbleibender Urlaubstage der Mitarbeiter. Zusät
 
 #### Demo System
 
-Zum Ausprobieren der Anwendung gibt es ein [Demo System](https://urlaubsverwaltung-demo.synyx.de) mit Testbenutzern für
+Zum Ausprobieren der Anwendung gibt es ein [Demo System](https://urlaubsverwaltung.herokuapp.com) mit Testbenutzern für
 die unterschiedlichen Rollen:
 
 | Rolle                     | Benutzername  | Passwort | Vorname, Nachname |
@@ -90,7 +93,7 @@ Eine aktive Person kann eine oder mehrere Rollen innehaben.
 #### REST-Schnittstelle
 
 Die Urlaubsverwaltung besitzt einen sich selbst beschreibende REST-Schnittstelle.
-Diese kann mit über `/api/` aufgerufen werden, z.Bsp. hier: https://urlaubsverwaltung-demo.synyx.de/api/index.html
+Diese kann mit über `/api/` aufgerufen werden, z.Bsp. hier: https://urlaubsverwaltung.herokuapp.com/api/index.html
 
 ---
 
@@ -99,7 +102,10 @@ Diese kann mit über `/api/` aufgerufen werden, z.Bsp. hier: https://urlaubsverw
 Um eine aktuelle Version der Urlaubsverwaltung zu installieren, bitte die folgende Anleitung befolgen.
 
 Falls noch eine ältere Version (< 2.12.0) der Urlaubsverwaltung verwendet hier, können Details zur Installation und
-Konfiguration [hier](docs/INSTALLATION_AS_WAR.md) nachgelesen werden.
+Konfiguration [hier](docs/LEGACY_WAR_INSTALLATION.md) nachgelesen werden.
+
+Zusätzlich wird die Urlaubsverwaltung auch als Docker Image [synxy/urlaubsverwaltung](https://hub.docker.com/r/synyx/urlaubsverwaltung) bereitgestellt.
+Beispiele zu diesem Deployment gibt es [hier](.examples/README.md).
 
 #### Systemvoraussetzungen
 
@@ -108,9 +114,10 @@ Konfiguration [hier](docs/INSTALLATION_AS_WAR.md) nachgelesen werden.
 
 #### Download
 
-Die Anwendung steht auf Github bereits als deploybare JAR-Datei zum Download zur Verfügung.
-Einfach die JAR-Datei der aktuellsten Version [hier](https://github.com/synyx/urlaubsverwaltung/releases/latest)
-downloaden.
+Die Anwendung steht auf Github bereits als deploybare WAR-Datei zum Download zur Verfügung.
+Einfach die WAR-Datei der aktuellsten Version [hier](https://github.com/synyx/urlaubsverwaltung/releases/latest)
+downloaden. Auch wenn der Download eine WAR-Datei ist, kann sie wie die bisherige JAR-Datei verwendet werden,
+da die WAR-Datei einen Tomcat bundled.
 
 #### Starten der Anwendung
 
@@ -118,7 +125,7 @@ Damit man die Anwendung möglichst schnell ausprobieren kann, bietet es sich an 
 zu starten:
 
 ```bash
-java -jar -Dspring.profiles.active=dev urlaubsverwaltung.jar
+java -jar -Dspring.profiles.active=dev urlaubsverwaltung.war
 ```
 
 Auf diese Weise wird die Anwendung mit einer In-Memory-Datenbank und Testdaten gestartet.
@@ -244,13 +251,25 @@ Damit der OAuth 2.0 Handshake durchgeführt werden kann, ist es notwendig die di
 
 Im Folgenden werden die durchzuführenden Schritte beschrieben, wenn man an der Urlaubsverwaltung entwickeln möchte.
 
-#### Repository clonen
+### Repository clonen
 
 ```bash
 git clone git@github.com:synyx/urlaubsverwaltung.git
 ```
 
-#### Anwendung starten
+### Release
+
+Für ein Release wird das [maven-release-plugin](http://maven.apache.org/maven-release/maven-release-plugin/) verwendet. 
+Zum sorgenfreien Release Erstellung kann folgendes Script verwendet werden. 
+
+```bash
+export RELEASE_VERSION=0.10.0
+export NEW_VERSION=0.11.0-SNAPSHOT
+./release.sh
+git fetch
+```
+
+### Anwendung starten
 
 Die Urlaubsverwaltung ist eine [Spring Boot](http://projects.spring.io/spring-boot/) Anwendung und kann mit dem Maven
 Plugin gestartet werden:
@@ -275,7 +294,7 @@ Maven Aufruf gestartet werden:
 ```
 Einzelne Parameter lassen sich mit `-D<parameterName>=<parameterWert>` überschreiben.
 
-#### Anwendung nutzen
+### Anwendung nutzen
 Im Browser lässt sich die Anwendung dann über `http://localhost:8080/` ansteuern.
 
 Ohne weitere Anpassung der Standardkonfiguration wird eine H2-Datenbank verwendet und es werden Testdaten angelegt,
@@ -288,25 +307,25 @@ Testbenutzern anmelden:
 * `testManager/secret`: Benutzer mit der Rolle `SecondStageAuthority`
 * `test/secret`: Benutzer mit der Rolle `Office`
 
-#### Anlegen von Testdaten deaktivieren
+### Anlegen von Testdaten deaktivieren
 
 Möchte man, dass beim Starten der Anwendung keine Testdaten generiert werden, muss man die Property `testdata.create`
 in den `application-dev.properties` auf `false` setzen.
 
-#### H2 Web Konsole
+### H2 Web Konsole
 
-Die Standardkonfiguration sorgt dafür, dass eine H2 Web Konsole aktiv ist. Diese kann standardmäßig erreicht werden
-unter:
+Die Standardkonfiguration im `dev`-Profil sorgt dafür, dass eine H2 Web Konsole aktiv ist.  
+Diese kann standardmäßig erreicht werden unter:
 
 <pre>localhost:8080/h2-console/</pre>
 
 Die H2 Konfigurationen können in der `application-dev.properties` überschrieben werden.
 
-#### API
+### API
 
 Die Urlaubsverwaltung verfügt über eine API, die unter `http://localhost:8080/api` erreichbar ist.
 
-#### Authentifizierung
+### Authentifizierung
 
 Siehe [Authentifizierung](#authentifizierung)
 
@@ -316,7 +335,7 @@ Property oder man konfiguriert diese in den `application.properties` bzw. in den
 Hinweis: Die Verbindung zum LDAP / Active Directory muss dafür selbstverständlich korrekt in den
 `application.properties` bzw. in den `application-dev.properties` konfiguriert sein.
 
-##### LDAP
+#### LDAP
 
 Die Anwendung mit dem Parameter `-Dauth=ldap` starten:
 
@@ -328,7 +347,7 @@ Oder die Property `auth` in den `application.properties` bzw. in den `applicatio
 
 <pre>auth=ldap</pre>
 
-##### Active Directory
+#### Active Directory
 
 Die Anwendung mit dem Parameter `-Dauth=activeDirectory` starten:
 
@@ -340,7 +359,7 @@ Oder die Property `auth` in den `application.properties` bzw. in den `applicatio
 
 <pre>auth=activeDirectory</pre>
 
-#### Externe Systeme mit Docker virtualisieren
+### Externe Systeme mit Docker virtualisieren
 
 Wenn man in einer produktions-nahen Umgebung entwickeln oder Probleme nachstellen will, bietet es sich an, die extenen
 Systeme wie die Datenbank oder den LDAP-Server zu virtualisieren. [Hier wird gezeigt, wie man das mit Docker
@@ -369,7 +388,4 @@ Alle Änderungen an der Anwendung werden im Changelog gepflegt: [Changelog](CHAN
 ## Lizenz
 
 [synyx/urlaubsverwaltung](http://github.com/synyx/urlaubsverwaltung) is licensed under the
-[Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-
-Alle Logos, Marken- und Warenzeichen unterliegen **nicht** der Apache License 2.0 und dürfen nur mit schriftlicher
-Genehmigung von [synyx](https://www.synyx.de/) weiterverwendet werden.
+[Apache License 2.0](LICENSE.txt)

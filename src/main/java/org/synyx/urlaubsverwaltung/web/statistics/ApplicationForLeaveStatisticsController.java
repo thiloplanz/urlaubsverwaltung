@@ -7,7 +7,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.DataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.synyx.urlaubsverwaltung.core.application.service.VacationTypeService;
 import org.synyx.urlaubsverwaltung.core.statistics.ApplicationForLeaveStatisticsCsvExportService;
@@ -24,8 +29,6 @@ import java.util.Optional;
 
 /**
  * Controller to generate applications for leave statistics.
- *
- * @author Aljona Murygina - murygina@synyx.de
  */
 @Controller
 @RequestMapping(ApplicationForLeaveStatisticsController.STATISTICS_REL)
@@ -33,14 +36,16 @@ public class ApplicationForLeaveStatisticsController {
 
     static final String STATISTICS_REL = "/web/application/statistics";
 
-    @Autowired
-    private ApplicationForLeaveStatisticsService applicationForLeaveStatisticsService;
+    private final ApplicationForLeaveStatisticsService applicationForLeaveStatisticsService;
+    private final ApplicationForLeaveStatisticsCsvExportService applicationForLeaveStatisticsCsvExportService;
+    private final VacationTypeService vacationTypeService;
 
     @Autowired
-    private ApplicationForLeaveStatisticsCsvExportService applicationForLeaveStatisticsCsvExportService;
-
-    @Autowired
-    private VacationTypeService vacationTypeService;
+    public ApplicationForLeaveStatisticsController(ApplicationForLeaveStatisticsService applicationForLeaveStatisticsService, ApplicationForLeaveStatisticsCsvExportService applicationForLeaveStatisticsCsvExportService, VacationTypeService vacationTypeService) {
+        this.applicationForLeaveStatisticsService = applicationForLeaveStatisticsService;
+        this.applicationForLeaveStatisticsCsvExportService = applicationForLeaveStatisticsCsvExportService;
+        this.vacationTypeService = vacationTypeService;
+    }
 
     @InitBinder
     public void initBinder(DataBinder binder) {

@@ -1,14 +1,10 @@
 package org.synyx.urlaubsverwaltung.web.account;
 
 import org.joda.time.DateMidnight;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 
-/**
- * @author  Aljona Murygina - murygina@synyx.de
- */
 public class AccountFormTest {
 
     @Test

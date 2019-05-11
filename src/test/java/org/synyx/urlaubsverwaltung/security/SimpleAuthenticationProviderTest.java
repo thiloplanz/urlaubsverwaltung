@@ -3,9 +3,6 @@ package org.synyx.urlaubsverwaltung.security;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.mockito.Mockito;
-
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,7 +10,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.person.PersonService;
 import org.synyx.urlaubsverwaltung.core.person.Role;
@@ -24,11 +20,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-/**
- * @author  Daniel Hammann - <hammann@synyx.de>
- * @author  Aljona Murygina - murygina@synyx.de
- */
+
 public class SimpleAuthenticationProviderTest {
 
     private PersonService personService;
@@ -37,7 +34,7 @@ public class SimpleAuthenticationProviderTest {
     @Before
     public void setUp() {
 
-        personService = Mockito.mock(PersonService.class);
+        personService = mock(PersonService.class);
         authenticationProvider = new SimpleAuthenticationProvider(personService);
     }
 
@@ -56,12 +53,12 @@ public class SimpleAuthenticationProviderTest {
         Person user = TestDataCreator.createPerson(username, Role.USER, Role.OFFICE);
         user.setPassword(encodedPassword);
 
-        Mockito.when(personService.getPersonByLogin(username)).thenReturn(Optional.of(user));
+        when(personService.getPersonByLogin(username)).thenReturn(Optional.of(user));
 
         Authentication credentials = new UsernamePasswordAuthenticationToken(username, rawPassword, null);
         Authentication authentication = authenticationProvider.authenticate(credentials);
 
-        Mockito.verify(personService).getPersonByLogin(username);
+        verify(personService).getPersonByLogin(username);
 
         Assert.assertNotNull("Missing authentication", authentication);
         Assert.assertEquals("Wrong username", username, authentication.getName());
@@ -72,7 +69,7 @@ public class SimpleAuthenticationProviderTest {
     @Test(expected = UsernameNotFoundException.class)
     public void ensureExceptionIsThrownIfUserCanNotBeFoundWithinDatabase() {
 
-        Mockito.when(personService.getPersonByLogin(Mockito.anyString())).thenReturn(Optional.empty());
+        when(personService.getPersonByLogin(anyString())).thenReturn(Optional.empty());
 
         Authentication credentials = new UsernamePasswordAuthenticationToken("user", "password", null);
         authenticationProvider.authenticate(credentials);
@@ -89,7 +86,7 @@ public class SimpleAuthenticationProviderTest {
         Person user = TestDataCreator.createPerson(username, Role.INACTIVE);
         user.setPassword(encodedPassword);
 
-        Mockito.when(personService.getPersonByLogin(username)).thenReturn(Optional.of(user));
+        when(personService.getPersonByLogin(username)).thenReturn(Optional.of(user));
 
         Authentication credentials = new UsernamePasswordAuthenticationToken(username, rawPassword, null);
         authenticationProvider.authenticate(credentials);
@@ -105,7 +102,7 @@ public class SimpleAuthenticationProviderTest {
         Person user = TestDataCreator.createPerson(username, Role.USER, Role.OFFICE);
         user.setPassword(encodedPassword);
 
-        Mockito.when(personService.getPersonByLogin(username)).thenReturn(Optional.of(user));
+        when(personService.getPersonByLogin(username)).thenReturn(Optional.of(user));
 
         Authentication credentials = new UsernamePasswordAuthenticationToken(username, "invalid", null);
         authenticationProvider.authenticate(credentials);

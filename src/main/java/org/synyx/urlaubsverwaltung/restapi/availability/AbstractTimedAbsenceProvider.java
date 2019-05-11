@@ -1,11 +1,9 @@
 package org.synyx.urlaubsverwaltung.restapi.availability;
 
 import org.joda.time.DateMidnight;
-
 import org.synyx.urlaubsverwaltung.core.person.Person;
 
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
 
 
@@ -13,8 +11,6 @@ import java.util.ArrayList;
  * This class is used to build a chain of responsibility (https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern)
  * which defines in which order absences are to be checked. This ensures, that multiple overlapping absences for a
  * certain date do not sum up to more than a full day. Priorities are: free time > holidays > sick > vacation
- *
- * @author  Timo Eifler - eifler@synyx.de
  */
 abstract class AbstractTimedAbsenceProvider {
 

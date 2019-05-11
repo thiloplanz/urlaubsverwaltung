@@ -1,7 +1,6 @@
 package org.synyx.urlaubsverwaltung.web.application;
 
 import org.springframework.beans.BeanUtils;
-
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.period.WeekDay;
 import org.synyx.urlaubsverwaltung.core.workingtime.WorkDaysService;
@@ -12,8 +11,6 @@ import java.math.BigDecimal;
 /**
  * Represents an extended {@link org.synyx.urlaubsverwaltung.core.application.domain.Application} with information about
  * the number of work days. (depending on working time of the person)
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public class ApplicationForLeave extends Application {
 

@@ -23,9 +23,9 @@ legend {
 
 legend,
 .legend-dropdown > a {
-    font-family: synyx, Verdana,sans-serif;
-    font-size: 30px;
-    color: #516310;
+    font-family: Verdana,sans-serif;
+    font-size: 26px;
+    color: #444444;
 }
 
 .legend-dropdown > ul {

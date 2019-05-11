@@ -3,14 +3,11 @@ package org.synyx.urlaubsverwaltung.core.sync.absence;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.synyx.urlaubsverwaltung.core.settings.CalendarSettings;
 
 
 /**
  * Unit test for {@link AbsenceTimeConfiguration}.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public class AbsenceTimeConfigurationTest {
 

@@ -3,36 +3,27 @@ package org.synyx.urlaubsverwaltung.core.sync.absence;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.mockito.Mockito;
-
-import org.synyx.urlaubsverwaltung.core.application.domain.Application;
-import org.synyx.urlaubsverwaltung.core.sicknote.SickNote;
-
-import java.util.Optional;
-
 import static org.hamcrest.CoreMatchers.is;
-
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 
-/**
- * Daniel Hammann - <hammann@synyx.de>.
- */
 public class AbsenceMappingServiceImplTest {
 
     private AbsenceMappingService sut;
     private AbsenceMappingDAO absenceMappingDAO;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 
-        absenceMappingDAO = Mockito.mock(AbsenceMappingDAO.class);
+        absenceMappingDAO = mock(AbsenceMappingDAO.class);
         sut = new AbsenceMappingServiceImpl(absenceMappingDAO);
     }
 
 
     @Test
-    public void shouldCreateAbsenceMappingForVacation() throws Exception {
+    public void shouldCreateAbsenceMappingForVacation() {
 
         String eventId = "eventId";
 
@@ -41,12 +32,12 @@ public class AbsenceMappingServiceImplTest {
         assertThat(result.getAbsenceId(), is(42));
         assertThat(result.getAbsenceType(), is(AbsenceType.VACATION));
         assertThat(result.getEventId(), is(eventId));
-        Mockito.verify(absenceMappingDAO).save(result);
+        verify(absenceMappingDAO).save(result);
     }
 
 
     @Test
-    public void shouldCreateAbsenceMappingForSickDay() throws Exception {
+    public void shouldCreateAbsenceMappingForSickDay() {
 
         String eventId = "eventId";
 
@@ -55,7 +46,7 @@ public class AbsenceMappingServiceImplTest {
         assertThat(result.getAbsenceId(), is(21));
         assertThat(result.getAbsenceType(), is(AbsenceType.SICKNOTE));
         assertThat(result.getEventId(), is(eventId));
-        Mockito.verify(absenceMappingDAO).save(result);
+        verify(absenceMappingDAO).save(result);
     }
 
 
@@ -65,7 +56,7 @@ public class AbsenceMappingServiceImplTest {
         AbsenceMapping absenceMapping = new AbsenceMapping(42, AbsenceType.VACATION, "dummyEvent");
         sut.delete(absenceMapping);
 
-        Mockito.verify(absenceMappingDAO).delete(absenceMapping);
+        verify(absenceMappingDAO).delete(absenceMapping);
     }
 
 
@@ -74,6 +65,6 @@ public class AbsenceMappingServiceImplTest {
 
         sut.getAbsenceByIdAndType(21, AbsenceType.SICKNOTE);
 
-        Mockito.verify(absenceMappingDAO).findAbsenceMappingByAbsenceIdAndAbsenceType(21, AbsenceType.SICKNOTE);
+        verify(absenceMappingDAO).findAbsenceMappingByAbsenceIdAndAbsenceType(21, AbsenceType.SICKNOTE);
     }
 }

@@ -4,14 +4,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-
 import java.util.Locale;
 
 
 /**
  * Unit test for {@link org.synyx.urlaubsverwaltung.web.DecimalNumberPropertyEditor}.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public class DecimalNumberPropertyEditorTest {
 

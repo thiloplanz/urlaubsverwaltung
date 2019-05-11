@@ -1,13 +1,10 @@
 package org.synyx.urlaubsverwaltung.restapi.availability;
 
 import org.joda.time.DateMidnight;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.mockito.Mockito;
-
 import org.synyx.urlaubsverwaltung.core.period.DayLength;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.settings.FederalState;
@@ -16,15 +13,17 @@ import org.synyx.urlaubsverwaltung.core.workingtime.WorkingTimeService;
 import org.synyx.urlaubsverwaltung.test.TestDataCreator;
 
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-/**
- * @author  Timo Eifler - eifler@synyx.de
- */
+
 public class FreeTimeAbsenceProviderTest {
 
     private FreeTimeAbsenceProvider freeTimeAbsenceProvider;
@@ -33,12 +32,11 @@ public class FreeTimeAbsenceProviderTest {
     private WorkingTimeService workingTimeService;
     private TimedAbsenceSpans emptyTimedAbsenceSpans;
     private Person testPerson;
-    private WorkingTime testWorkingTime;
 
     @Before
     public void setUp() {
 
-        holidayAbsenceProvider = Mockito.mock(HolidayAbsenceProvider.class);
+        holidayAbsenceProvider = mock(HolidayAbsenceProvider.class);
         setupDefaultWorkingTimeService();
 
         emptyTimedAbsenceSpans = new TimedAbsenceSpans(new ArrayList<>());
@@ -50,13 +48,13 @@ public class FreeTimeAbsenceProviderTest {
 
     private void setupDefaultWorkingTimeService() {
 
-        testWorkingTime = TestDataCreator.createWorkingTime();
-        workingTimeService = Mockito.mock(WorkingTimeService.class);
-        Mockito.when(workingTimeService.getByPersonAndValidityDateEqualsOrMinorDate(Mockito.any(Person.class),
-                    Mockito.any(DateMidnight.class)))
+        WorkingTime testWorkingTime = TestDataCreator.createWorkingTime();
+        workingTimeService = mock(WorkingTimeService.class);
+        when(workingTimeService.getByPersonAndValidityDateEqualsOrMinorDate(any(Person.class),
+                    any(DateMidnight.class)))
             .thenReturn(Optional.of(testWorkingTime));
-        Mockito.when(workingTimeService.getFederalStateForPerson(Mockito.any(Person.class),
-                    Mockito.any(DateMidnight.class)))
+        when(workingTimeService.getFederalStateForPerson(any(Person.class),
+                    any(DateMidnight.class)))
             .thenReturn(FederalState.BADEN_WUERTTEMBERG);
     }
 
@@ -97,7 +95,7 @@ public class FreeTimeAbsenceProviderTest {
 
         freeTimeAbsenceProvider.checkForAbsence(emptyTimedAbsenceSpans, testPerson, standardWorkingDay);
 
-        Mockito.verify(holidayAbsenceProvider, Mockito.times(1))
+        verify(holidayAbsenceProvider, times(1))
             .checkForAbsence(emptyTimedAbsenceSpans, testPerson, standardWorkingDay);
     }
 }

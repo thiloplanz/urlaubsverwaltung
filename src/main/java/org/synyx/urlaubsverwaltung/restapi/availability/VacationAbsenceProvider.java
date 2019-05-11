@@ -1,11 +1,8 @@
 package org.synyx.urlaubsverwaltung.restapi.availability;
 
 import org.joda.time.DateMidnight;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
-
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.application.domain.ApplicationStatus;
 import org.synyx.urlaubsverwaltung.core.application.service.ApplicationService;
@@ -16,13 +13,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-/**
- * @author  Timo Eifler - eifler@synyx.de
- */
 @Service
 class VacationAbsenceProvider extends AbstractTimedAbsenceProvider {
 
-    private ApplicationService applicationService;
+    private final ApplicationService applicationService;
 
     @Autowired
     VacationAbsenceProvider(ApplicationService applicationService) {

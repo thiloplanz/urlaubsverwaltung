@@ -5,14 +5,11 @@ import org.synyx.urlaubsverwaltung.core.sicknote.SickNoteCategory;
 import org.synyx.urlaubsverwaltung.core.workingtime.WorkDaysService;
 
 import java.math.BigDecimal;
-
 import java.util.List;
 
 
 /**
  * Build a sick days statistic for a certain year and person.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public class SickDaysOverview {
 

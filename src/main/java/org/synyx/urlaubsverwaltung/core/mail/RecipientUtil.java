@@ -1,17 +1,14 @@
 package org.synyx.urlaubsverwaltung.core.mail;
 
 import org.springframework.util.StringUtils;
-
 import org.synyx.urlaubsverwaltung.core.person.Person;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 
-/**
- * @author  Aljona Murygina - murygina@synyx.de
- */
 final class RecipientUtil {
 
     private RecipientUtil() {
@@ -27,7 +24,9 @@ final class RecipientUtil {
 
     static List<String> getMailAddresses(List<Person> persons) {
 
-        return persons.stream().filter(person -> StringUtils.hasText(person.getEmail())).map(person ->
-                    person.getEmail()).collect(Collectors.toList());
+        return persons.stream()
+            .filter(person -> StringUtils.hasText(person.getEmail()))
+            .map(Person::getEmail)
+            .collect(toList());
     }
 }

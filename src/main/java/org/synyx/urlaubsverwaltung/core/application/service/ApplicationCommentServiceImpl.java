@@ -5,11 +5,8 @@
 package org.synyx.urlaubsverwaltung.core.application.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
-
 import org.synyx.urlaubsverwaltung.core.application.dao.ApplicationCommentDAO;
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.application.domain.ApplicationAction;
@@ -22,8 +19,6 @@ import java.util.Optional;
 
 /**
  * Implementation of interface {@link ApplicationCommentService}.
- *
- * @author  Aljona Murygina
  */
 @Service
 @Transactional
@@ -46,9 +41,7 @@ class ApplicationCommentServiceImpl implements ApplicationCommentService {
         comment.setAction(action);
         comment.setApplication(application);
 
-        if (text.isPresent()) {
-            comment.setText(text.get());
-        }
+        text.ifPresent(comment::setText);
 
         commentDAO.save(comment);
 

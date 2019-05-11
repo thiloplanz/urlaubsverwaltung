@@ -2,7 +2,6 @@ package org.synyx.urlaubsverwaltung.web;
 
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTimeConstants;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,9 +9,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 
-/**
- * @author  Aljona Murygina - murygina@synyx.de
- */
 public class FilterPeriodTest {
 
     @Test(expected = IllegalArgumentException.class)

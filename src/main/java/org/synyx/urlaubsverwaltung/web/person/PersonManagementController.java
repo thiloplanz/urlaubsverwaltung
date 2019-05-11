@@ -1,26 +1,19 @@
-
 package org.synyx.urlaubsverwaltung.web.person;
 
 import org.joda.time.DateMidnight;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.access.prepost.PreAuthorize;
-
 import org.springframework.stereotype.Controller;
-
 import org.springframework.ui.Model;
-
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Errors;
-
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import org.synyx.urlaubsverwaltung.core.department.DepartmentService;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.person.PersonService;
@@ -30,25 +23,23 @@ import org.synyx.urlaubsverwaltung.web.DecimalNumberPropertyEditor;
 import org.synyx.urlaubsverwaltung.web.department.DepartmentConstants;
 
 import java.math.BigDecimal;
-
 import java.util.Locale;
 
 
-/**
- * @author  Aljona Murygina - murygina@synyx.de
- */
 @Controller
 @RequestMapping("/web")
 public class PersonManagementController {
 
-    @Autowired
-    private PersonService personService;
+    private final PersonService personService;
+    private final DepartmentService departmentService;
+    private final PersonValidator validator;
 
     @Autowired
-    DepartmentService departmentService;
-
-    @Autowired
-    private PersonValidator validator;
+    public PersonManagementController(PersonService personService, DepartmentService departmentService, PersonValidator validator) {
+        this.personService = personService;
+        this.departmentService = departmentService;
+        this.validator = validator;
+    }
 
     @InitBinder
     public void initBinder(DataBinder binder, Locale locale) {
@@ -59,7 +50,7 @@ public class PersonManagementController {
 
 
     @PreAuthorize(SecurityRules.IS_OFFICE)
-    @RequestMapping(value = "/staff/new", method = RequestMethod.GET)
+    @GetMapping("/staff/new")
     public String newPersonForm(Model model) {
 
         model.addAttribute(PersonConstants.PERSON_ATTRIBUTE, new Person());
@@ -69,7 +60,7 @@ public class PersonManagementController {
 
 
     @PreAuthorize(SecurityRules.IS_OFFICE)
-    @RequestMapping(value = "/staff", method = RequestMethod.POST)
+    @PostMapping("/staff")
     public String newPerson(@ModelAttribute(PersonConstants.PERSON_ATTRIBUTE) Person person,
                             Errors errors,
                             RedirectAttributes redirectAttributes) {
@@ -89,7 +80,7 @@ public class PersonManagementController {
 
 
     @PreAuthorize(SecurityRules.IS_OFFICE)
-    @RequestMapping(value = "/staff/{personId}/edit", method = RequestMethod.GET)
+    @GetMapping("/staff/{personId}/edit")
     public String editPersonForm(@PathVariable("personId") Integer personId,
                                  Model model)
         throws UnknownPersonException {
@@ -107,7 +98,7 @@ public class PersonManagementController {
 
 
     @PreAuthorize(SecurityRules.IS_OFFICE)
-    @RequestMapping(value = "/staff/{personId}/edit", method = RequestMethod.POST)
+    @PostMapping("/staff/{personId}/edit")
     public String editPerson(@PathVariable("personId") Integer personId,
         @ModelAttribute(PersonConstants.PERSON_ATTRIBUTE) Person person, Errors errors,
         RedirectAttributes redirectAttributes) {

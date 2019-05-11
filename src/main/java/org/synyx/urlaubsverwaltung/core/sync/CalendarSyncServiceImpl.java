@@ -1,37 +1,33 @@
 package org.synyx.urlaubsverwaltung.core.sync;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.synyx.urlaubsverwaltung.core.settings.CalendarSettings;
 import org.synyx.urlaubsverwaltung.core.settings.SettingsService;
 import org.synyx.urlaubsverwaltung.core.sync.absence.Absence;
-import org.synyx.urlaubsverwaltung.core.sync.providers.CalendarProvider;
 
 import java.util.Optional;
 
 
 /**
  * Implementation of {@link CalendarSyncService}.
- *
- * @author Aljona Murygina - murygina@synyx.de
  */
 @Service
 public class CalendarSyncServiceImpl implements CalendarSyncService {
 
-    private static final Logger LOG = Logger.getLogger(CalendarSyncServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CalendarSyncServiceImpl.class);
 
-    private SettingsService settingsService;
+    private final SettingsService settingsService;
     private final CalendarService calendarService;
 
     @Autowired
     public CalendarSyncServiceImpl(SettingsService settingsService, CalendarService calendarService) {
         this.settingsService = settingsService;
-
-
         this.calendarService = calendarService;
 
-        LOG.info("The following calendar provider is configured: " + calendarService.getCalendarProvider().getClass());
+        LOG.info("The following calendar provider is configured: {}", calendarService.getCalendarProvider().getClass());
     }
 
     @Override

@@ -5,7 +5,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.synyx.urlaubsverwaltung.core.mail.MailService;
 import org.synyx.urlaubsverwaltung.core.period.DayLength;
@@ -13,38 +17,33 @@ import org.synyx.urlaubsverwaltung.core.settings.FederalState;
 import org.synyx.urlaubsverwaltung.core.settings.GoogleCalendarSettings;
 import org.synyx.urlaubsverwaltung.core.settings.Settings;
 import org.synyx.urlaubsverwaltung.core.settings.SettingsService;
-import org.synyx.urlaubsverwaltung.core.sync.CalendarSyncService;
 import org.synyx.urlaubsverwaltung.core.sync.providers.CalendarProvider;
 import org.synyx.urlaubsverwaltung.security.SecurityRules;
 import org.synyx.urlaubsverwaltung.web.ControllerConstants;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 
-/**
- * Daniel Hammann - <hammann@synyx.de>.
- */
 @Controller
 @RequestMapping("/web/settings")
 public class SettingsController {
 
     private final SettingsService settingsService;
-    private final CalendarSyncService calendarSyncService;
     private final List<CalendarProvider> calendarProviders;
     private final MailService mailService;
     private final SettingsValidator settingsValidator;
 
     @Autowired
     public SettingsController(SettingsService settingsService,
-                              CalendarSyncService calendarSyncService,
                               List<CalendarProvider> calendarProviders,
                               MailService mailService,
                               SettingsValidator settingsValidator) {
         this.settingsService = settingsService;
-        this.calendarSyncService = calendarSyncService;
         this.calendarProviders = calendarProviders;
         this.mailService = mailService;
         this.settingsValidator = settingsValidator;
@@ -57,7 +56,7 @@ public class SettingsController {
                                   HttpServletRequest request) {
 
         String authorizedRedirectUrl = getAuthorizedRedirectUrl(
-                request.getRequestURL().toString(), ControllerConstants.OATUH_REDIRECT_REL);
+            request.getRequestURL().toString(), ControllerConstants.OATUH_REDIRECT_REL);
 
         Settings settings = settingsService.getSettings();
 
@@ -81,10 +80,18 @@ public class SettingsController {
         model.addAttribute("dayLengthTypes", DayLength.values());
 
         List<String> providers = calendarProviders.stream()
-                .map(provider -> provider.getClass().getSimpleName())
-                .sorted(Comparator.reverseOrder())
-                .collect(Collectors.toList());
+            .map(provider -> provider.getClass().getSimpleName())
+            .sorted(Comparator.reverseOrder())
+            .collect(Collectors.toList());
         model.addAttribute("providers", providers);
+
+        List<String> availableTimezones = Arrays.asList(TimeZone.getAvailableIDs());
+        model.addAttribute("availableTimezones", availableTimezones);
+
+        if (settings.getCalendarSettings().getExchangeCalendarSettings().getTimeZoneId() == null) {
+            settings.getCalendarSettings().getExchangeCalendarSettings().setTimeZoneId(TimeZone.getDefault().getID());
+        }
+
         model.addAttribute("authorizedRedirectUrl", authorizedRedirectUrl);
     }
 
@@ -99,7 +106,7 @@ public class SettingsController {
                                 HttpServletRequest request) {
 
         String authorizedRedirectUrl = getAuthorizedRedirectUrl(
-                request.getRequestURL().toString(), ControllerConstants.OATUH_REDIRECT_REL);
+            request.getRequestURL().toString(), ControllerConstants.OATUH_REDIRECT_REL);
 
         settingsValidator.validate(settings, errors);
 
@@ -141,8 +148,8 @@ public class SettingsController {
 
     private boolean refreshTokenGotInvalid(GoogleCalendarSettings oldSettings, GoogleCalendarSettings newSettings) {
         if (oldSettings.getClientSecret() == null
-                || oldSettings.getClientId() == null
-                || oldSettings.getCalendarId() == null) {
+            || oldSettings.getClientId() == null
+            || oldSettings.getCalendarId() == null) {
             return true;
         }
 
@@ -151,7 +158,7 @@ public class SettingsController {
 
     private boolean shouldShowOAuthError(String googleOAuthError, Settings settings) {
         return googleOAuthError != null
-                && !googleOAuthError.isEmpty()
-                && settings.getCalendarSettings().getGoogleCalendarSettings().getRefreshToken() == null;
+            && !googleOAuthError.isEmpty()
+            && settings.getCalendarSettings().getGoogleCalendarSettings().getRefreshToken() == null;
     }
 }

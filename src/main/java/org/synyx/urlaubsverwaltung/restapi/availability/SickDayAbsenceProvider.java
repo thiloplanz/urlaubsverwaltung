@@ -1,11 +1,8 @@
 package org.synyx.urlaubsverwaltung.restapi.availability;
 
 import org.joda.time.DateMidnight;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
-
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.sicknote.SickNote;
 import org.synyx.urlaubsverwaltung.core.sicknote.SickNoteService;
@@ -14,13 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 
-/**
- * @author  Timo Eifler - eifler@synyx.de
- */
 @Service
 class SickDayAbsenceProvider extends AbstractTimedAbsenceProvider {
 
-    private SickNoteService sickNoteService;
+    private final SickNoteService sickNoteService;
 
     @Autowired
     SickDayAbsenceProvider(VacationAbsenceProvider nextPriorityProvider, SickNoteService sickNoteService) {

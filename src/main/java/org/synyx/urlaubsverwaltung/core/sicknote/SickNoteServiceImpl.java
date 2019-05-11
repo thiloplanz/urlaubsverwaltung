@@ -1,11 +1,8 @@
 package org.synyx.urlaubsverwaltung.core.sicknote;
 
 import org.joda.time.DateMidnight;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
-
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.settings.AbsenceSettings;
 import org.synyx.urlaubsverwaltung.core.settings.Settings;
@@ -16,9 +13,7 @@ import java.util.Optional;
 
 
 /**
- * Implentation for {@link org.synyx.urlaubsverwaltung.core.sicknote.SickNoteService}.
- *
- * @author  Aljona Murygina - murygina@synyx.de
+ * Implementation for {@link org.synyx.urlaubsverwaltung.core.sicknote.SickNoteService}.
  */
 @Service
 public class SickNoteServiceImpl implements SickNoteService {
@@ -43,7 +38,7 @@ public class SickNoteServiceImpl implements SickNoteService {
     @Override
     public Optional<SickNote> getById(Integer id) {
 
-        return Optional.ofNullable(sickNoteDAO.findOne(id));
+        return sickNoteDAO.findById(id);
     }
 
 

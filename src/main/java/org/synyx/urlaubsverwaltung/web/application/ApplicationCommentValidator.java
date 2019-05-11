@@ -1,17 +1,13 @@
 package org.synyx.urlaubsverwaltung.web.application;
 
 import org.springframework.stereotype.Component;
-
 import org.springframework.util.StringUtils;
-
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 
 /**
  * Validates the content of {@link ApplicationCommentForm}s.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 @Component
 public class ApplicationCommentValidator implements Validator {

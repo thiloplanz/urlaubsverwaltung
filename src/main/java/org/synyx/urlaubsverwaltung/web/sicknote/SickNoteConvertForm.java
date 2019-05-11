@@ -1,7 +1,6 @@
 package org.synyx.urlaubsverwaltung.web.sicknote;
 
 import org.joda.time.DateMidnight;
-
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.application.domain.ApplicationStatus;
 import org.synyx.urlaubsverwaltung.core.application.domain.VacationType;
@@ -12,8 +11,6 @@ import org.synyx.urlaubsverwaltung.core.sicknote.SickNote;
 
 /**
  * Represents a form to convert a sick note to vacation.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public class SickNoteConvertForm {
 

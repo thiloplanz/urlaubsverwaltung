@@ -1,10 +1,8 @@
 package org.synyx.urlaubsverwaltung.core.department;
 
 import org.joda.time.DateTime;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.test.TestDataCreator;
 
@@ -12,9 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * @author  Daniel Hammann - <hammann@synyx.de>
- */
 public class DepartmentTest {
 
     @Test
@@ -29,7 +24,7 @@ public class DepartmentTest {
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void ensureCanNotSetLastModificationDateToNull() throws Exception {
+    public void ensureCanNotSetLastModificationDateToNull() {
 
         new Department().setLastModification(null);
     }

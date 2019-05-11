@@ -1,23 +1,17 @@
 package org.synyx.urlaubsverwaltung.restapi.availability;
 
 import org.joda.time.DateMidnight;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
-
 import org.synyx.urlaubsverwaltung.core.person.Person;
 
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
  * Service to retrieve {@link DayAvailability} information.
- *
- * @author  Timo Eifler - eifler@synyx.de
  */
 @Service
 public class AvailabilityService {

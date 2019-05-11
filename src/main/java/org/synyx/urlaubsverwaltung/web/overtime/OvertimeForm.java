@@ -1,9 +1,7 @@
 package org.synyx.urlaubsverwaltung.web.overtime;
 
 import org.joda.time.DateMidnight;
-
 import org.springframework.util.Assert;
-
 import org.synyx.urlaubsverwaltung.core.overtime.Overtime;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 
@@ -12,8 +10,6 @@ import java.math.BigDecimal;
 
 /**
  * View class to record overtime for a certain period of time.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public class OvertimeForm {
 

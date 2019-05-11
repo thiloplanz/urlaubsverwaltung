@@ -1,15 +1,11 @@
 package org.synyx.urlaubsverwaltung.core.sicknote;
 
-import org.apache.log4j.Logger;
-
 import org.joda.time.DateMidnight;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
-
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.application.service.ApplicationInteractionService;
 import org.synyx.urlaubsverwaltung.core.person.Person;
@@ -28,14 +24,12 @@ import java.util.Optional;
 
 /**
  * Implementation for {@link org.synyx.urlaubsverwaltung.core.sicknote.SickNoteInteractionService}.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 @Service
 @Transactional
 public class SickNoteInteractionServiceImpl implements SickNoteInteractionService {
 
-    private static final Logger LOG = Logger.getLogger(SickNoteInteractionServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SickNoteInteractionServiceImpl.class);
 
     private final SickNoteService sickNoteService;
     private final SickNoteCommentService commentService;
@@ -64,9 +58,9 @@ public class SickNoteInteractionServiceImpl implements SickNoteInteractionServic
         sickNote.setLastEdited(DateMidnight.now());
 
         sickNoteService.save(sickNote);
-        commentService.create(sickNote, SickNoteAction.CREATED, Optional.<String>empty(), creator);
+        commentService.create(sickNote, SickNoteAction.CREATED, Optional.empty(), creator);
 
-        LOG.info("Created sick note: " + sickNote.toString());
+        LOG.info("Created sick note: {}", sickNote);
 
         CalendarSettings calendarSettings = settingsService.getSettings().getCalendarSettings();
         AbsenceTimeConfiguration timeConfiguration = new AbsenceTimeConfiguration(calendarSettings);
@@ -74,9 +68,7 @@ public class SickNoteInteractionServiceImpl implements SickNoteInteractionServic
         Optional<String> eventId = calendarSyncService.addAbsence(new Absence(sickNote.getPerson(),
                     sickNote.getPeriod(), EventType.SICKNOTE, timeConfiguration));
 
-        if (eventId.isPresent()) {
-            absenceMappingService.create(sickNote.getId(), AbsenceType.SICKNOTE, eventId.get());
-        }
+        eventId.ifPresent(s -> absenceMappingService.create(sickNote.getId(), AbsenceType.SICKNOTE, s));
 
         return sickNote;
     }
@@ -89,9 +81,9 @@ public class SickNoteInteractionServiceImpl implements SickNoteInteractionServic
         sickNote.setLastEdited(DateMidnight.now());
 
         sickNoteService.save(sickNote);
-        commentService.create(sickNote, SickNoteAction.EDITED, Optional.<String>empty(), editor);
+        commentService.create(sickNote, SickNoteAction.EDITED, Optional.empty(), editor);
 
-        LOG.info("Updated sick note: " + sickNote.toString());
+        LOG.info("Updated sick note: {}", sickNote);
 
         Optional<AbsenceMapping> absenceMapping = absenceMappingService.getAbsenceByIdAndType(sickNote.getId(),
                 AbsenceType.SICKNOTE);
@@ -115,11 +107,11 @@ public class SickNoteInteractionServiceImpl implements SickNoteInteractionServic
         sickNote.setLastEdited(DateMidnight.now());
 
         sickNoteService.save(sickNote);
-        commentService.create(sickNote, SickNoteAction.CONVERTED_TO_VACATION, Optional.<String>empty(), converter);
+        commentService.create(sickNote, SickNoteAction.CONVERTED_TO_VACATION, Optional.empty(), converter);
 
         applicationInteractionService.createFromConvertedSickNote(application, converter);
 
-        LOG.info("Converted sick note to vacation: " + sickNote.toString());
+        LOG.info("Converted sick note to vacation: {}", sickNote);
 
         Optional<AbsenceMapping> absenceMapping = absenceMappingService.getAbsenceByIdAndType(sickNote.getId(),
                 AbsenceType.SICKNOTE);
@@ -145,9 +137,9 @@ public class SickNoteInteractionServiceImpl implements SickNoteInteractionServic
         sickNote.setLastEdited(DateMidnight.now());
 
         sickNoteService.save(sickNote);
-        commentService.create(sickNote, SickNoteAction.CANCELLED, Optional.<String>empty(), canceller);
+        commentService.create(sickNote, SickNoteAction.CANCELLED, Optional.empty(), canceller);
 
-        LOG.info("Cancelled sick note: " + sickNote.toString());
+        LOG.info("Cancelled sick note: {}", sickNote);
 
         Optional<AbsenceMapping> absenceMapping = absenceMappingService.getAbsenceByIdAndType(sickNote.getId(),
                 AbsenceType.SICKNOTE);

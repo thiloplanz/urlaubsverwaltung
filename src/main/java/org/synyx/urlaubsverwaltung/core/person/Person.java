@@ -2,30 +2,21 @@ package org.synyx.urlaubsverwaltung.core.person;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-
 import org.springframework.data.jpa.domain.AbstractPersistable;
-
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.util.Collection;
+import java.util.Collections;
 
 
 /**
  * This class describes a person.
- *
- * @author  Johannes Reuter
- * @author  Aljona Murygina
  */
 
 @Entity
@@ -144,7 +135,7 @@ public class Person extends AbstractPersistable<Integer> {
 
     public boolean hasRole(final Role role) {
 
-        return getPermissions().stream().filter(permission -> permission.equals(role)).findFirst().isPresent();
+        return getPermissions().stream().anyMatch(permission -> permission.equals(role));
     }
 
 
@@ -166,7 +157,7 @@ public class Person extends AbstractPersistable<Integer> {
 
     public boolean hasNotificationType(final MailNotification notification) {
 
-        return getNotifications().stream().filter(element -> element.equals(notification)).findFirst().isPresent();
+        return getNotifications().stream().anyMatch(element -> element.equals(notification));
     }
 
 

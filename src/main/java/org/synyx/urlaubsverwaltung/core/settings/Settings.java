@@ -2,7 +2,6 @@ package org.synyx.urlaubsverwaltung.core.settings;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.Entity;
@@ -10,8 +9,6 @@ import javax.persistence.Entity;
 
 /**
  * Represents the settings / business rules for the application.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 @Entity
 public class Settings extends AbstractPersistable<Integer> {

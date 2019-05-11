@@ -1,7 +1,8 @@
 package org.synyx.urlaubsverwaltung.core.account.service;
 
-import org.apache.log4j.Logger;
 import org.joda.time.DateMidnight;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,14 +15,12 @@ import java.util.Optional;
 
 /**
  * Implementation of interface {@link AccountInteractionService}.
- *
- * @author Aljona Murygina - murygina@synyx.de
  */
 @Service
 @Transactional
 class AccountInteractionServiceImpl implements AccountInteractionService {
 
-    private static final Logger LOG = Logger.getLogger(AccountInteractionServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AccountInteractionServiceImpl.class);
 
     private final AccountService accountService;
     private final VacationDaysService vacationDaysService;
@@ -45,7 +44,7 @@ class AccountInteractionServiceImpl implements AccountInteractionService {
 
         accountService.save(account);
 
-        LOG.info("Created holidays account: " + account);
+        LOG.info("Created holidays account: {}", account);
 
         return account;
     }
@@ -65,7 +64,7 @@ class AccountInteractionServiceImpl implements AccountInteractionService {
 
         accountService.save(account);
 
-        LOG.info("Updated holidays account: " + account);
+        LOG.info("Updated holidays account: {}", account);
 
         return account;
     }
@@ -87,7 +86,7 @@ class AccountInteractionServiceImpl implements AccountInteractionService {
 
                 updateRemainingVacationDays(nextYearsHolidaysAccount, changedHolidaysAccount);
 
-                LOG.info("Updated remaining vacation days of holidays account: " + nextYearsHolidaysAccount);
+                LOG.info("Updated remaining vacation days of holidays account: {}", nextYearsHolidaysAccount);
 
                 startYear++;
             } else {
@@ -130,7 +129,7 @@ class AccountInteractionServiceImpl implements AccountInteractionService {
             Account nextYearAccount = nextYearAccountOptional.get();
             updateRemainingVacationDays(nextYearAccount, referenceAccount);
 
-            LOG.info("Updated existing holidays account for " + nextYear + ": " + nextYearAccount);
+            LOG.info("Updated existing holidays account for {}: {}", nextYear, nextYearAccount);
 
             return nextYearAccount;
         }

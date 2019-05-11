@@ -1,28 +1,23 @@
 package org.synyx.urlaubsverwaltung.web;
 
-import org.apache.log4j.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-
 import org.springframework.security.access.AccessDeniedException;
-
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
-
 import org.synyx.urlaubsverwaltung.web.sicknote.SickNoteAlreadyInactiveException;
 
 
 /**
  * Handles exceptions and redirects to error page.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 @ControllerAdvice(basePackages = "org.synyx.urlaubsverwaltung.web")
 public class ExceptionHandlerControllerAdvice {
 
-    private static final Logger LOG = Logger.getLogger(ExceptionHandlerControllerAdvice.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandlerControllerAdvice.class);
 
     private static final String ERROR_PAGE_NAME = "errors";
 
@@ -39,8 +34,6 @@ public class ExceptionHandlerControllerAdvice {
         modelAndView.addObject("exception", exception);
         modelAndView.addObject("statusCode", httpStatus.value());
 
-        exception.printStackTrace();
-
         return modelAndView;
     }
 
@@ -51,9 +44,10 @@ public class ExceptionHandlerControllerAdvice {
     )
     public ModelAndView handleException(AbstractNoResultFoundException exception) {
 
-        LOG.debug("An exception was thrown: " + exception.getClass().getName());
-        LOG.debug("An error occurred: " + exception.getMessage());
-
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("An exception was thrown: {}", exception.getClass().getName());
+            LOG.debug("An error occurred: {}", exception.getMessage());
+        }
         return ExceptionHandlerControllerAdvice.getErrorPage(exception, HttpStatus.BAD_REQUEST);
     }
 
@@ -62,9 +56,10 @@ public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(AccessDeniedException.class)
     public ModelAndView handleException(AccessDeniedException exception) {
 
-        LOG.debug("An exception was thrown: " + exception.getClass().getName());
-        LOG.debug("An error occurred: " + exception.getMessage());
-
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("An exception was thrown: {}", exception.getClass().getName());
+            LOG.debug("An error occurred: {}", exception.getMessage());
+        }
         return ExceptionHandlerControllerAdvice.getErrorPage(exception, HttpStatus.FORBIDDEN);
     }
 
@@ -73,8 +68,8 @@ public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception exception) {
 
-        LOG.info("An exception was thrown: " + exception.getClass().getName());
-        LOG.info("An error occurred: " + exception.getMessage());
+        LOG.info("An exception was thrown: {}", exception.getClass().getName());
+        LOG.info("An error occurred: {}", exception.getMessage());
 
         return ExceptionHandlerControllerAdvice.getErrorPage(exception, HttpStatus.INTERNAL_SERVER_ERROR);
     }

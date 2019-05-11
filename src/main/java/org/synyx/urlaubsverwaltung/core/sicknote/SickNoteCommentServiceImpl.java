@@ -1,9 +1,7 @@
 package org.synyx.urlaubsverwaltung.core.sicknote;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
-
 import org.synyx.urlaubsverwaltung.core.person.Person;
 
 import java.util.List;
@@ -12,8 +10,6 @@ import java.util.Optional;
 
 /**
  * Implementation for {@link SickNoteCommentService}.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 @Service
 public class SickNoteCommentServiceImpl implements SickNoteCommentService {
@@ -35,9 +31,7 @@ public class SickNoteCommentServiceImpl implements SickNoteCommentService {
         comment.setAction(action);
         comment.setPerson(author);
 
-        if (text.isPresent()) {
-            comment.setText(text.get());
-        }
+        text.ifPresent(comment::setText);
 
         commentDAO.save(comment);
 

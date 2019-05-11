@@ -1,16 +1,12 @@
 package org.synyx.urlaubsverwaltung.core.period;
 
 import org.joda.time.DateTimeConstants;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.function.Consumer;
 
 
-/**
- * @author  Aljona Murygina - murygina@synyx.de
- */
 public class WeekDayTest {
 
     @Test

@@ -1,11 +1,8 @@
 package org.synyx.urlaubsverwaltung.core.workingtime;
 
 import org.joda.time.DateMidnight;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
-
 import org.synyx.urlaubsverwaltung.core.period.DayLength;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.settings.FederalState;
@@ -14,14 +11,11 @@ import org.synyx.urlaubsverwaltung.core.util.DateFormat;
 import org.synyx.urlaubsverwaltung.core.util.DateUtil;
 
 import java.math.BigDecimal;
-
 import java.util.Optional;
 
 
 /**
  * Service for calendar purpose.
- *
- * @author  Aljona Murygina
  */
 @Service
 public class WorkDaysService {

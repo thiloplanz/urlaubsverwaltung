@@ -5,9 +5,7 @@ import org.joda.time.DateTime;
 import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
 import org.springframework.util.StringUtils;
-
 import org.synyx.urlaubsverwaltung.core.util.DateFormat;
 
 import java.beans.PropertyEditorSupport;
@@ -15,8 +13,6 @@ import java.beans.PropertyEditorSupport;
 
 /**
  * Converts a {@link String} to {@link org.joda.time.DateMidnight} and vice versa.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public class DateMidnightPropertyEditor extends PropertyEditorSupport {
 

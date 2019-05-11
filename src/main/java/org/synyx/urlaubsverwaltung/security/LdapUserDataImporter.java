@@ -1,30 +1,22 @@
 package org.synyx.urlaubsverwaltung.security;
 
-import org.apache.log4j.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-
 import org.springframework.scheduling.annotation.Scheduled;
-
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
-
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.person.PersonService;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
-
-import javax.annotation.PostConstruct;
 
 
 /**
  * Import person data from configured LDAP or Active Directory.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 @Service
 @Transactional
@@ -33,7 +25,7 @@ import javax.annotation.PostConstruct;
 )
 public class LdapUserDataImporter {
 
-    private static final Logger LOG = Logger.getLogger(LdapSyncService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LdapSyncService.class);
 
     private final LdapUserService ldapUserService;
     private final LdapSyncService ldapSyncService;
@@ -57,7 +49,7 @@ public class LdapUserDataImporter {
 
         List<LdapUser> users = ldapUserService.getLdapUsers();
 
-        LOG.info("Found " + users.size() + " user(s)");
+        LOG.info("Found {} user(s)", users.size());
 
         for (LdapUser user : users) {
             String username = user.getUsername();

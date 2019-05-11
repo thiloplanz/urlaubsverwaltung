@@ -1,16 +1,11 @@
 package org.synyx.urlaubsverwaltung.web.overtime;
 
 import org.joda.time.DateMidnight;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Component;
-
 import org.springframework.util.StringUtils;
-
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-
 import org.synyx.urlaubsverwaltung.core.overtime.Overtime;
 import org.synyx.urlaubsverwaltung.core.overtime.OvertimeService;
 import org.synyx.urlaubsverwaltung.core.settings.SettingsService;
@@ -18,14 +13,11 @@ import org.synyx.urlaubsverwaltung.core.settings.WorkingTimeSettings;
 import org.synyx.urlaubsverwaltung.core.util.CalcUtil;
 
 import java.math.BigDecimal;
-
 import java.util.Optional;
 
 
 /**
  * Validates overtime record.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 @Component
 public class OvertimeValidator implements Validator {

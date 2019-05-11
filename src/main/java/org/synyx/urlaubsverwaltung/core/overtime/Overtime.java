@@ -2,29 +2,22 @@ package org.synyx.urlaubsverwaltung.core.overtime;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
 import org.joda.time.DateMidnight;
-
 import org.springframework.data.jpa.domain.AbstractPersistable;
-
 import org.springframework.util.Assert;
-
 import org.synyx.urlaubsverwaltung.core.person.Person;
-
-import java.math.BigDecimal;
-
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
+import java.math.BigDecimal;
+import java.util.Date;
 
 
 /**
  * Represents the overtime of a person for a certain period of time.
  *
- * @author  Aljona Murygina - murygina@synyx.de
  * @since  2.11.0
  */
 @Entity
@@ -102,6 +95,11 @@ public class Overtime extends AbstractPersistable<Integer> {
         return hours;
     }
 
+    @Override
+    public void setId(Integer id) { // NOSONAR - make it public instead of protected
+
+        super.setId(id);
+    }
 
     public void setPerson(Person person) {
 

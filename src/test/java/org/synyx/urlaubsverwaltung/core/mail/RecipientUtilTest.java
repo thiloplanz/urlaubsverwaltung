@@ -2,16 +2,12 @@ package org.synyx.urlaubsverwaltung.core.mail;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.test.TestDataCreator;
 
 import java.util.List;
 
 
-/**
- * @author  Aljona Murygina - murygina@synyx.de
- */
 public class RecipientUtilTest {
 
     @Test

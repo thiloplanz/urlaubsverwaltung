@@ -1,14 +1,11 @@
 package org.synyx.urlaubsverwaltung.core.period;
 
 import org.joda.time.DateTimeConstants;
-
 import org.springframework.util.Assert;
 
 
 /**
  * Represents a day of week.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public enum WeekDay {
 
@@ -23,7 +20,7 @@ public enum WeekDay {
     private static final int MIN_WEEK_DAY = 1;
     private static final int MAX_WEEK_DAY = 7;
 
-    private Integer dayOfWeek;
+    private final Integer dayOfWeek;
 
     WeekDay(Integer dayOfWeek) {
 

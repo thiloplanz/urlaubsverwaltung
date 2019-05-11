@@ -8,17 +8,14 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.util.DateFormat;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * This class describes how many vacation days and remaining vacation days a person has in which period (validFrom, validTo).
- *
- * @author Aljona Murygina - murygina@synyx.de
  */
 @Entity
 public class Account extends AbstractPersistable<Integer> {

@@ -1,17 +1,14 @@
 package org.synyx.urlaubsverwaltung.web.overview;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.joda.time.DateMidnight;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.synyx.urlaubsverwaltung.core.account.domain.Account;
 import org.synyx.urlaubsverwaltung.core.account.service.AccountService;
@@ -30,7 +27,6 @@ import org.synyx.urlaubsverwaltung.core.sicknote.SickNoteService;
 import org.synyx.urlaubsverwaltung.core.util.DateUtil;
 import org.synyx.urlaubsverwaltung.core.workingtime.WorkDaysService;
 import org.synyx.urlaubsverwaltung.security.SessionService;
-import org.synyx.urlaubsverwaltung.web.ControllerConstants;
 import org.synyx.urlaubsverwaltung.web.application.ApplicationForLeave;
 import org.synyx.urlaubsverwaltung.web.person.PersonConstants;
 import org.synyx.urlaubsverwaltung.web.person.UnknownPersonException;
@@ -39,55 +35,48 @@ import org.synyx.urlaubsverwaltung.web.statistics.SickDaysOverview;
 import org.synyx.urlaubsverwaltung.web.statistics.UsedDaysOverview;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
+import static java.util.stream.Collectors.toList;
+import static org.synyx.urlaubsverwaltung.web.ControllerConstants.YEAR_ATTRIBUTE;
+import static org.synyx.urlaubsverwaltung.web.ControllerConstants.TIMELINE_DEPARTMENT_ATTRIBUTE;
 
 /**
  * Controller to display the personal overview page with basic information about
  * overtime, applications for leave and sick notes.
- *
- * @author Aljona Murygina - murygina@synyx.de
  */
 @Controller
 @RequestMapping("/web")
 public class OverviewController {
 
-    @Autowired
-    private PersonService personService;
-
-    @Autowired
+    private final PersonService personService;
     private DepartmentService departmentService;
+    private final AccountService accountService;
+    private final VacationDaysService vacationDaysService;
+    private final SessionService sessionService;
+    private final ApplicationService applicationService;
+    private final WorkDaysService calendarService;
+    private final SickNoteService sickNoteService;
+    private final OvertimeService overtimeService;
+    private final SettingsService settingsService;
 
-    @Autowired
-    private AccountService accountService;
 
-    @Autowired
-    private VacationDaysService vacationDaysService;
-
-    @Autowired
-    private SessionService sessionService;
-
-    @Autowired
-    private ApplicationService applicationService;
-
-    @Autowired
-    private WorkDaysService calendarService;
-
-    @Autowired
-    private SickNoteService sickNoteService;
-
-    @Autowired
-    private OvertimeService overtimeService;
-
-    @Autowired
-    private SettingsService settingsService;
-
-    @RequestMapping(value = "/overview", method = RequestMethod.GET)
-    public String showOverview(
-            @RequestParam(value = ControllerConstants.YEAR_ATTRIBUTE, required = false) String year) {
+    public OverviewController(PersonService personService, DepartmentService departmentService, AccountService accountService, VacationDaysService vacationDaysService, SessionService sessionService, ApplicationService applicationService, WorkDaysService calendarService, SickNoteService sickNoteService, OvertimeService overtimeService, SettingsService settingsService) {
+        this.personService = personService;
+        this.departmentService = departmentService;
+        this.accountService = accountService;
+        this.vacationDaysService = vacationDaysService;
+        this.sessionService = sessionService;
+        this.applicationService = applicationService;
+        this.calendarService = calendarService;
+        this.sickNoteService = sickNoteService;
+        this.overtimeService = overtimeService;
+        this.settingsService = settingsService;
+    }
+    @GetMapping("/overview")
+    public String showOverview(@RequestParam(value = YEAR_ATTRIBUTE, required = false) String year) {
 
         Person user = sessionService.getSignedInUser();
 
@@ -98,12 +87,13 @@ public class OverviewController {
         return "redirect:/web/staff/" + user.getId() + "/overview";
     }
 
-    @RequestMapping(value = "/staff/{personId}/overview", method = RequestMethod.GET)
-    public String showOverview(@PathVariable("personId") Integer personId,
-                               @RequestParam(value = ControllerConstants.YEAR_ATTRIBUTE, required = false) Integer year,
-                               @RequestParam(value = ControllerConstants.TIMELINE_DEPARTMENT_ATTRIBUTE, required = false) Integer timelineDepartment,
+    @GetMapping("/staff/{personId}/overview")
+	public String showOverview(@PathVariable("personId") Integer personId,
+			@RequestParam(value = YEAR_ATTRIBUTE, required = false) Integer year,
+                               @RequestParam(value = TIMELINE_DEPARTMENT_ATTRIBUTE, required = false) Integer timelineDepartment,
+
                                Model model)
-            throws UnknownPersonException, AccessDeniedException {
+			throws UnknownPersonException, AccessDeniedException {
 
         Person person = personService.getPersonByID(personId).orElseThrow(() -> new UnknownPersonException(personId));
         Person signedInUser = sessionService.getSignedInUser();
@@ -120,7 +110,7 @@ public class OverviewController {
         if (timelineDepartment != null) {
             Optional<Department> department = relevantDepartments.stream().filter(d -> d.getId().equals(timelineDepartment)).findFirst();
             if (department.isPresent()) {
-                model.addAttribute(ControllerConstants.TIMELINE_DEPARTMENT_ATTRIBUTE, department.get());
+                model.addAttribute(TIMELINE_DEPARTMENT_ATTRIBUTE, department.get());
             } else {
                 throw new AccessDeniedException(String.format(
                         "User '%s' has not the correct permissions to access the department timeline of department '%d'",
@@ -143,7 +133,7 @@ public class OverviewController {
         prepareSickNoteList(person, yearToShow, model);
         prepareSettings(model);
 
-        model.addAttribute(ControllerConstants.YEAR_ATTRIBUTE, DateMidnight.now().getYear());
+        model.addAttribute(YEAR_ATTRIBUTE, DateMidnight.now().getYear());
         model.addAttribute("currentYear", DateMidnight.now().getYear());
         model.addAttribute("currentMonth", DateMidnight.now().getMonthOfYear());
 
@@ -155,11 +145,10 @@ public class OverviewController {
         List<SickNote> sickNotes = sickNoteService.getByPersonAndPeriod(person, DateUtil.getFirstDayOfYear(year),
                 DateUtil.getLastDayOfYear(year));
 
-        List<ExtendedSickNote> extendedSickNotes = FluentIterable.from(sickNotes)
-                .transform(input -> new ExtendedSickNote(input, calendarService)).toSortedList((o1, o2) -> {
-                    // show latest sick notes at first
-                    return o2.getStartDate().compareTo(o1.getStartDate());
-                });
+        List<ExtendedSickNote> extendedSickNotes = sickNotes.stream()
+            .map(input -> new ExtendedSickNote(input, calendarService))
+            .sorted(Comparator.comparing(ExtendedSickNote::getStartDate).reversed())
+            .collect(toList());
 
         model.addAttribute("sickNotes", extendedSickNotes);
 
@@ -170,17 +159,16 @@ public class OverviewController {
     private void prepareApplications(Person person, int year, Model model) {
 
         // get the person's applications for the given year
-        List<Application> applications = FluentIterable
-                .from(applicationService.getApplicationsForACertainPeriodAndPerson(DateUtil.getFirstDayOfYear(year),
-                        DateUtil.getLastDayOfYear(year), person))
-                .filter(input -> !input.hasStatus(ApplicationStatus.REVOKED)).toList();
+        List<Application> applications = applicationService.getApplicationsForACertainPeriodAndPerson(DateUtil.getFirstDayOfYear(year),
+            DateUtil.getLastDayOfYear(year), person).stream()
+            .filter(input -> !input.hasStatus(ApplicationStatus.REVOKED))
+            .collect(toList());
 
         if (!applications.isEmpty()) {
-            ImmutableList<ApplicationForLeave> applicationsForLeave = FluentIterable.from(applications)
-                    .transform(input -> new ApplicationForLeave(input, calendarService)).toSortedList((o1, o2) -> {
-                        // show latest applications at first
-                        return o2.getStartDate().compareTo(o1.getStartDate());
-                    });
+            List<ApplicationForLeave> applicationsForLeave = applications.stream()
+                .map(application -> new ApplicationForLeave(application, calendarService))
+                .sorted(Comparator.comparing(ApplicationForLeave::getStartDate).reversed())
+                .collect(toList());
 
             model.addAttribute("applications", applicationsForLeave);
 
@@ -199,7 +187,8 @@ public class OverviewController {
 
         if (account.isPresent()) {
             Account acc = account.get();
-            model.addAttribute("vacationDaysLeft", vacationDaysService.getVacationDaysLeft(acc, accountService.getHolidaysAccount(year+1, person)));
+            final Optional<Account> accountNextYear = accountService.getHolidaysAccount(year + 1, person);
+            model.addAttribute("vacationDaysLeft", vacationDaysService.getVacationDaysLeft(account.get(), accountNextYear));
             model.addAttribute("account", acc);
             model.addAttribute(PersonConstants.BEFORE_APRIL_ATTRIBUTE, DateUtil.isBeforeApril(DateMidnight.now(), acc.getYear()));
         }

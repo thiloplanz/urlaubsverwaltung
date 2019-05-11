@@ -1,14 +1,11 @@
 package org.synyx.urlaubsverwaltung.core.department;
 
-import org.apache.log4j.Logger;
-
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
-
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.application.domain.ApplicationStatus;
 import org.synyx.urlaubsverwaltung.core.application.service.ApplicationService;
@@ -25,14 +22,11 @@ import java.util.stream.Collectors;
 
 /**
  * Implementation for {@link DepartmentService}.
- *
- * @author  Daniel Hammann - <hammann@synyx.de>
- * @author  Aljona Murygina - <murygina@synyx.de>
  */
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
-    private static final Logger LOG = Logger.getLogger(DepartmentServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DepartmentServiceImpl.class);
 
     private final DepartmentDAO departmentDAO;
     private final ApplicationService applicationService;
@@ -46,8 +40,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Optional<Department> getDepartmentById(Integer departmentId) {
-
-        return Optional.ofNullable(departmentDAO.findOne(departmentId));
+        return departmentDAO.findById(departmentId);
     }
 
 
@@ -56,7 +49,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         departmentDAO.save(department);
 
-        LOG.info("Created department: " + department.toString());
+        LOG.info("Created department: {}", department);
     }
 
 
@@ -67,17 +60,17 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         departmentDAO.save(department);
 
-        LOG.info("Updated department: " + department.toString());
+        LOG.info("Updated department: {}", department);
     }
 
 
     @Override
     public void delete(Integer departmentId) {
 
-        if (departmentDAO.findOne(departmentId) == null) {
-            LOG.info("No department found for ID = " + departmentId + ", deletion is not necessary.");
+        if (departmentDAO.findById(departmentId).isPresent()) {
+            departmentDAO.deleteById(departmentId);
         } else {
-            departmentDAO.delete(departmentId);
+            LOG.info("No department found for ID = {}, deletion is not necessary.", departmentId);
         }
     }
 
@@ -112,7 +105,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public List<Application> getApplicationsForLeaveOfMembersInDepartmentsOfPerson(Person member,
-        DateMidnight startDate, DateMidnight endDate) {
+                                                                                   DateMidnight startDate, DateMidnight endDate) {
 
         List<Person> departmentMembers = getMembersOfAssignedDepartments(member);
         List<Application> departmentApplications = new ArrayList<>();
@@ -120,15 +113,15 @@ public class DepartmentServiceImpl implements DepartmentService {
         departmentMembers.stream()
             .filter(departmentMember -> !departmentMember.equals(member))
             .forEach(departmentMember ->
-                    departmentApplications.addAll(
-                        applicationService.getApplicationsForACertainPeriodAndPerson(startDate, endDate,
-                                departmentMember)
-                            .stream()
-                            .filter(application ->
-                                        application.hasStatus(ApplicationStatus.ALLOWED)
-                                        || application.hasStatus(ApplicationStatus.TEMPORARY_ALLOWED)
-                                        || application.hasStatus(ApplicationStatus.WAITING))
-                            .collect(Collectors.toList())));
+                departmentApplications.addAll(
+                    applicationService.getApplicationsForACertainPeriodAndPerson(startDate, endDate,
+                        departmentMember)
+                        .stream()
+                        .filter(application ->
+                            application.hasStatus(ApplicationStatus.ALLOWED)
+                                || application.hasStatus(ApplicationStatus.TEMPORARY_ALLOWED)
+                                || application.hasStatus(ApplicationStatus.WAITING))
+                        .collect(Collectors.toList())));
 
         return departmentApplications;
     }
@@ -184,9 +177,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         if (departmentHead.hasRole(Role.DEPARTMENT_HEAD)) {
             List<Person> members = getManagedMembersOfDepartmentHead(departmentHead);
 
-            if (members.contains(person)) {
-                return true;
-            }
+            return members.contains(person);
         }
 
         return false;
@@ -199,9 +190,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         if (secondStageAuthority.hasRole(Role.SECOND_STAGE_AUTHORITY)) {
             List<Person> members = getMembersForSecondStageAuthority(secondStageAuthority);
 
-            if (members.contains(person)) {
-                return true;
-            }
+            return members.contains(person);
         }
 
         return false;

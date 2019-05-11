@@ -1,17 +1,12 @@
 package org.synyx.urlaubsverwaltung.core.overtime;
 
 import org.joda.time.DateMidnight;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.test.TestDataCreator;
 
 
-/**
- * @author  Aljona Murygina - murygina@synyx.de
- */
 public class OvertimeCommentTest {
 
     @Test(expected = IllegalArgumentException.class)

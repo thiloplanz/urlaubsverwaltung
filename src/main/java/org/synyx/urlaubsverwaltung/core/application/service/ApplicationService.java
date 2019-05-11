@@ -1,13 +1,11 @@
 package org.synyx.urlaubsverwaltung.core.application.service;
 
 import org.joda.time.DateMidnight;
-
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.application.domain.ApplicationStatus;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 
 import java.math.BigDecimal;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -16,8 +14,6 @@ import java.util.Optional;
  * This service provides access to the {@link Application} entities. Except for saving, the access is read-only.
  * Business interactions are found in
  * {@link org.synyx.urlaubsverwaltung.core.application.service.ApplicationInteractionService}.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public interface ApplicationService {
 

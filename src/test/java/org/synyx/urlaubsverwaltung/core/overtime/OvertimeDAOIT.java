@@ -1,36 +1,22 @@
 package org.synyx.urlaubsverwaltung.core.overtime;
 
 import org.joda.time.DateMidnight;
-
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.person.PersonDAO;
 import org.synyx.urlaubsverwaltung.test.TestDataCreator;
 
 import java.math.BigDecimal;
-
 import java.util.List;
 
 
-/**
- * @author  Aljona Murygina - murygina@synyx.de
- */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:META-INF/applicationContext.xml")
-@Transactional
+@RunWith(SpringRunner.class)
+@DataJpaTest
 public class OvertimeDAOIT {
 
     @Autowired
@@ -40,8 +26,6 @@ public class OvertimeDAOIT {
     private OvertimeDAO overtimeDAO;
 
     @Test
-    @Rollback
-    @Ignore("Currently disabled as integration tests broke during the migration to Spring Boot.")
     public void ensureCanPersistOvertime() {
 
         Person person = TestDataCreator.createPerson();
@@ -59,8 +43,6 @@ public class OvertimeDAOIT {
 
 
     @Test
-    @Rollback
-    @Ignore("Currently disabled as integration tests broke during the migration to Spring Boot.")
     public void ensureCountsTotalHoursCorrectly() {
 
         Person person = TestDataCreator.createPerson();
@@ -88,8 +70,6 @@ public class OvertimeDAOIT {
 
 
     @Test
-    @Rollback
-    @Ignore("Currently disabled as integration tests broke during the migration to Spring Boot.")
     public void ensureReturnsNullAsTotalOvertimeIfPersonHasNoOvertimeRecords() {
 
         Person person = TestDataCreator.createPerson();
@@ -102,7 +82,6 @@ public class OvertimeDAOIT {
 
 
     @Test
-    @Ignore("Currently disabled as integration tests broke during the migration to Spring Boot.")
     public void ensureReturnsAllRecordsWithStartOrEndDateInTheGivenYear() {
 
         Person person = TestDataCreator.createPerson();

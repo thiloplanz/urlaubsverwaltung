@@ -4,7 +4,9 @@ import com.google.api.client.auth.oauth2.BearerToken;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.*;
+import com.google.api.client.http.BasicAuthentication;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -15,7 +17,6 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.synyx.urlaubsverwaltung.core.mail.MailService;
 import org.synyx.urlaubsverwaltung.core.period.DayLength;
 import org.synyx.urlaubsverwaltung.core.period.Period;
@@ -28,7 +29,9 @@ import org.synyx.urlaubsverwaltung.core.sync.absence.Absence;
 import org.synyx.urlaubsverwaltung.core.sync.absence.AbsenceTimeConfiguration;
 import org.synyx.urlaubsverwaltung.core.sync.absence.EventType;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Properties;
 
@@ -70,7 +73,7 @@ public class GoogleCalendarSyncProviderServiceTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         settingsService = prepareSettingsServiceMock();
         mailService = mock(MailService.class);
         googleCalendarSyncProvider = new GoogleCalendarSyncProvider(mailService, settingsService);
@@ -127,7 +130,7 @@ public class GoogleCalendarSyncProviderServiceTest {
         Person person = new Person("testUser", "Hans", "Wurst", "testUser@mail.test");
         Period period = new Period(DateMidnight.now(), DateMidnight.now(), DayLength.MORNING);
 
-        AbsenceTimeConfiguration config = new AbsenceTimeConfiguration(Mockito.mock(CalendarSettings.class));
+        AbsenceTimeConfiguration config = new AbsenceTimeConfiguration(mock(CalendarSettings.class));
         Absence absence = new Absence(person, period, EventType.WAITING_APPLICATION, config);
 
         int eventsBeforeAdd = getCalendarEventCount();
@@ -148,7 +151,7 @@ public class GoogleCalendarSyncProviderServiceTest {
     }
 
     private SettingsService prepareSettingsServiceMock() {
-        SettingsService settingsService = Mockito.mock(SettingsService.class);
+        SettingsService settingsService = mock(SettingsService.class);
         Settings settings = new Settings();
         CalendarSettings calendarSettings = new CalendarSettings();
         GoogleCalendarSettings googleCalendarSettings = new GoogleCalendarSettings();

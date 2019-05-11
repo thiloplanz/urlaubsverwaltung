@@ -2,30 +2,24 @@ package org.synyx.urlaubsverwaltung.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.DirContextOperations;
-
 import org.springframework.stereotype.Component;
-
 import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 
 /**
  * Maps LDAP attributes to {@link LdapUser} class.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 @Component
 @ConditionalOnExpression("'${auth}'=='activeDirectory' or '${auth}'=='ldap'")
@@ -37,7 +31,6 @@ public class LdapUserMapper implements AttributesMapper<LdapUser> {
     private final String firstNameAttribute;
     private final String lastNameAttribute;
     private final String mailAddressAttribute;
-
     private final String memberOfFilter;
 
     @Autowired
@@ -80,7 +73,7 @@ public class LdapUserMapper implements AttributesMapper<LdapUser> {
             }
         }
 
-        return new LdapUser(username, firstName, lastName, email, groups.stream().toArray(String[]::new));
+        return new LdapUser(username, firstName, lastName, email, groups.toArray(new String[0]));
     }
 
 

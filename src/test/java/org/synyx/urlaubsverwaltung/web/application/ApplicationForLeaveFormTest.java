@@ -1,12 +1,8 @@
 package org.synyx.urlaubsverwaltung.web.application;
 
 import org.joda.time.DateMidnight;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.mockito.Mockito;
-
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.application.domain.VacationCategory;
 import org.synyx.urlaubsverwaltung.core.application.domain.VacationType;
@@ -15,13 +11,9 @@ import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.test.TestDataCreator;
 
 import java.math.BigDecimal;
-
 import java.util.function.Consumer;
 
 
-/**
- * @author  Aljona Murygina - murygina@synyx.de
- */
 public class ApplicationForLeaveFormTest {
 
     @Test
@@ -90,7 +82,7 @@ public class ApplicationForLeaveFormTest {
         Assert.assertEquals("Wrong day length", DayLength.FULL, application.getDayLength());
         Assert.assertEquals("Wrong address", "Musterstr. 39", application.getAddress());
         Assert.assertEquals("Wrong reason", "Deshalb", application.getReason());
-        Assert.assertEquals("Wrong type", overtime.getDisplayName(), application.getVacationType().getDisplayName());
+        Assert.assertEquals("Wrong type", overtime.getMessageKey(), application.getVacationType().getMessageKey());
         Assert.assertEquals("Wrong hours", BigDecimal.ONE, application.getHours());
         Assert.assertTrue("Team should be informed", application.isTeamInformed());
     }

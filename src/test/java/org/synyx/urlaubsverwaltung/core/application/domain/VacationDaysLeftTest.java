@@ -1,10 +1,8 @@
 package org.synyx.urlaubsverwaltung.core.application.domain;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import org.synyx.urlaubsverwaltung.core.account.domain.VacationDaysLeft;
 
 import java.math.BigDecimal;
@@ -12,8 +10,6 @@ import java.math.BigDecimal;
 
 /**
  * Unit test for {@link org.synyx.urlaubsverwaltung.core.account.domain.VacationDaysLeft}.
- *
- * @author  Aljona Murygina - murygina@synyx.de
  */
 public class VacationDaysLeftTest {
 

@@ -3,13 +3,9 @@ package org.synyx.urlaubsverwaltung.restapi.holiday;
 import de.jollyday.Holiday;
 
 import java.math.BigDecimal;
-
 import java.util.Locale;
 
 
-/**
- * @author  Aljona Murygina <murygina@synyx.de>
- */
 public class PublicHolidayResponse {
     // YADOS: Need to make this class public, so that it can be accessed by AbsenceController#departmentVacations
 
