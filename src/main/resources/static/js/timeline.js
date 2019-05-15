@@ -404,13 +404,13 @@ $(function() {
 
             name: '<div><span>{{name}}</span></div>',
 
-            week: '<div class="datepicker-week {{css}}" data-datepicker-start="{{startDate}}">{{title}}<table class="datepicker-table"><thead>{{weekdays}}</thead><tbody>{{persons}}</tbody></table></div>',
+            week: '<div class="datepicker-week" data-datepicker-start="{{startDate}}">{{title}}<table class="datepicker-table"><thead>{{weekdays}}</thead><tbody>{{persons}}</tbody></table></div>',
 
             title: '<h3>{{title}}</h3>',
 
             weekdays: '<tr><th>{{' + [0,1,2,3,4,5,6].join('}}</th><th>{{') + '}}</th></tr>',
 
-            personWeek: '<tr data-datepicker-person="{{id}}"><td>{{' + [0,1,2,3,4,5,6].join('}}</td><td>{{') + '}}</td></tr>',
+            personWeek: '<tr data-datepicker-person="{{id}}"><td>{{' + [1,2,3,4,5,6,0].join('}}</td><td>{{') + '}}</td></tr>',
 
             day: '<span class="datepicker-day {{css}}" data-title="{{title}}" data-datepicker-absence-id={{absenceId}} data-datepicker-absence-type="{{absenceType}}" data-datepicker-date="{{date}}" data-datepicker-selectable="{{selectable}}">{{day}}</span>'
         };

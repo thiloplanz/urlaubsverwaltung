@@ -114,7 +114,7 @@
 .datepicker-week:nth-child(1) { left: -960px; }
 .datepicker-week:nth-child(2) { left: -640px; }
 .datepicker-week:nth-child(3) { left: -320px; }
-.datepicker-week:nth-child(4) { left: 100; }
+.datepicker-week:nth-child(4) { left: 100px; }
 .datepicker-week:nth-child(5) { left: 400px; }
 .datepicker-week:nth-child(6) { left: 700px; }
 .datepicker-week:nth-child(7) { left: 1000px; }
