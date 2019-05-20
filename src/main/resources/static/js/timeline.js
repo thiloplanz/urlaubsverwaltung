@@ -398,7 +398,7 @@ $(function() {
 
         var TMPL = {
 
-            container: '{{prevBtn}}<div class="datepicker-months-container" style="height: {{height}};">{{weeks}}<div class="datepicker-person">{{names}}</div></div>{{nextBtn}}',
+            container: '{{prevBtn}}<div class="datepicker-months-container" style="height: {{height}}px;">{{weeks}}<div class="datepicker-person">{{names}}</div></div>{{nextBtn}}',
 
             button: '<button class="{{css}}">{{text}}</button>',
 
