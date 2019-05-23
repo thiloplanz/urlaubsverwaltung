@@ -2,7 +2,7 @@
 * Fix calculation of days between start date and end date of sick notes [#686](https://github.com/synyx/urlaubsverwaltung/issues/686)
 
 ### [urlaubsverwaltung-2.39.0](https://github.com/synyx/urlaubsverwaltung/releases/tag/urlaubsverwaltung-2.39.0)
-* Bugfix: (Rest)urlaub wird nicht korrekt berechnet [#372](https://github.com/synyx/urlaubsverwaltung/issues/#372) [#551](https://github.com/synyx/urlaubsverwaltung/pull/#551)
+* Bugfix: (Rest)urlaub wird nicht korrekt berechnet [#372](https://github.com/synyx/urlaubsverwaltung/issues/372) [#551](https://github.com/synyx/urlaubsverwaltung/pull/551)
 * Verbesserung Urlaubsübersicht durch dynamische Sortierung [#395](https://github.com/synyx/urlaubsverwaltung/issues/395)
 * Kleine inhaltliche Verbesserungen in den E-Mail-Templates [#580](https://github.com/synyx/urlaubsverwaltung/issues/580) & [#584](https://github.com/synyx/urlaubsverwaltung/issues/584)
 * Fix for double account creation [#457](https://github.com/synyx/urlaubsverwaltung/issues/457)
