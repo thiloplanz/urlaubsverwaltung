@@ -94,13 +94,13 @@
                 var apiPrefix = "<spring:url value='/api' />";
 
                 function initCalendar() {
-                    const { getYear, setYear, firstOfYear, subMonths, addMonths, format } = dateFns;
+                    const { getYear, setYear, startOfYear, subMonths, addMonths, format } = dateFns;
 
                     var year = getUrlParam("year");
                     var date = new Date();
 
                     if (year.length > 0 && year != getYear(date)) {
-                        date = firstOfYear(setYear(date, year));
+                        date = startOfYear(setYear(date, year));
                     }
 
                     $('#month-selection span.labelText').text(format(date, 'MMMM'));
