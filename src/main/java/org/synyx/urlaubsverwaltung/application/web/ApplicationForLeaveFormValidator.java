@@ -259,7 +259,7 @@ public class ApplicationForLeaveFormValidator implements Validator {
 
     private void validateNotTooFarInThePast(LocalDate date, AbsenceSettings settings, Errors errors) {
 
-        Integer maximumMonths = settings.getMaximumMonthsToApplyForLeaveInAdvance();
+        Integer maximumMonths = settings.getMaximumMonthsToApplyForLeaveRetroactively();
         LocalDate past = ZonedDateTime.now(UTC).minusMonths(maximumMonths).toLocalDate();
 
         if (date.isBefore(past)) {

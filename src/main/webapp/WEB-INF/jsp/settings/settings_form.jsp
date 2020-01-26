@@ -146,6 +146,21 @@
                                             cssClass="error"/></span>
                                     </div>
                                 </div>
+                                <div class="form-group is-required">
+                                    <label class="control-label col-md-4"
+                                           for="absenceSettings.maximumMonthsToApplyForLeaveRetroactively">
+                                        <spring:message code='settings.vacation.maximumMonthsToApplyForLeaveRetroactively'/>:
+                                    </label>
+                                    <div class="col-md-8">
+                                        <form:input id="absenceSettings.maximumMonthsToApplyForLeaveRetroactively"
+                                                    path="absenceSettings.maximumMonthsToApplyForLeaveRetroactively"
+                                                    class="form-control" cssErrorClass="form-control error"
+                                                    type="number" step="1"/>
+                                        <span class="help-inline"><form:errors
+                                            path="absenceSettings.maximumMonthsToApplyForLeaveRetroactively"
+                                            cssClass="error"/></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

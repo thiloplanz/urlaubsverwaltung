@@ -131,6 +131,15 @@ public class SettingsValidator implements Validator {
             errors.rejectValue("absenceSettings.maximumMonthsToApplyForLeaveInAdvance", ERROR_INVALID_ENTRY);
         }
 
+        Integer maximumMonthsToApplyForLeaveRetroactively = absenceSettings.getMaximumMonthsToApplyForLeaveRetroactively();
+
+        if (maximumMonthsToApplyForLeaveRetroactively == null) {
+            errors.rejectValue("absenceSettings.maximumMonthsToApplyForLeaveRetroactively", ERROR_MANDATORY_FIELD);
+        } else if (maximumMonthsToApplyForLeaveRetroactively <= 0) {
+            errors.rejectValue("absenceSettings.maximumMonthsToApplyForLeaveRetroactively", ERROR_INVALID_ENTRY);
+        }
+
+
         Integer daysBeforeRemindForWaitingApplications = absenceSettings.getDaysBeforeRemindForWaitingApplications();
 
         if (daysBeforeRemindForWaitingApplications == null) {

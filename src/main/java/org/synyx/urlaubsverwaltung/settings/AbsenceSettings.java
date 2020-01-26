@@ -20,6 +20,11 @@ public class AbsenceSettings {
     private Integer maximumMonthsToApplyForLeaveInAdvance = 12; // NOSONAR
 
     /**
+     * Specifies how many months after the fact a person can apply for leave retroactively.
+     */
+    private Integer maximumMonthsToApplyForLeaveRetroactively = 12; // NOSONAR
+
+    /**
      * Specifies the maximal period of sick pay in days.
      */
     private Integer maximumSickPayDays = 42; // NOSONAR
@@ -52,6 +57,11 @@ public class AbsenceSettings {
         return maximumMonthsToApplyForLeaveInAdvance;
     }
 
+    public Integer getMaximumMonthsToApplyForLeaveRetroactively() {
+
+        return maximumMonthsToApplyForLeaveRetroactively;
+    }
+
 
     public Integer getMaximumSickPayDays() {
 
@@ -74,6 +84,11 @@ public class AbsenceSettings {
     public void setMaximumMonthsToApplyForLeaveInAdvance(Integer maximumMonthsToApplyForLeaveInAdvance) {
 
         this.maximumMonthsToApplyForLeaveInAdvance = maximumMonthsToApplyForLeaveInAdvance;
+    }
+
+    public void setMaximumMonthsToApplyForLeaveRetroactively(Integer maximumMonthsToApplyForLeaveRetroactively) {
+
+        this.maximumMonthsToApplyForLeaveRetroactively = maximumMonthsToApplyForLeaveRetroactively;
     }
 
 
