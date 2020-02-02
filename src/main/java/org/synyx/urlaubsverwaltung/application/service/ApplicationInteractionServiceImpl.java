@@ -19,6 +19,7 @@ import org.synyx.urlaubsverwaltung.calendarintegration.absence.AbsenceTimeConfig
 import org.synyx.urlaubsverwaltung.calendarintegration.absence.AbsenceType;
 import org.synyx.urlaubsverwaltung.department.Department;
 import org.synyx.urlaubsverwaltung.department.DepartmentService;
+import org.synyx.urlaubsverwaltung.period.NowService;
 import org.synyx.urlaubsverwaltung.person.Person;
 import org.synyx.urlaubsverwaltung.settings.CalendarSettings;
 import org.synyx.urlaubsverwaltung.settings.SettingsService;
@@ -54,6 +55,7 @@ public class ApplicationInteractionServiceImpl implements ApplicationInteraction
     private final AbsenceMappingService absenceMappingService;
     private final SettingsService settingsService;
     private final DepartmentService departmentService;
+    private final NowService nowService;
 
     @Autowired
     public ApplicationInteractionServiceImpl(ApplicationService applicationService,
@@ -62,7 +64,8 @@ public class ApplicationInteractionServiceImpl implements ApplicationInteraction
                                              ApplicationMailService applicationMailService, CalendarSyncService calendarSyncService,
                                              AbsenceMappingService absenceMappingService,
                                              SettingsService settingsService,
-                                             DepartmentService departmentService) {
+                                             DepartmentService departmentService,
+                                             NowService nowService) {
 
         this.applicationService = applicationService;
         this.commentService = commentService;
@@ -72,6 +75,7 @@ public class ApplicationInteractionServiceImpl implements ApplicationInteraction
         this.absenceMappingService = absenceMappingService;
         this.settingsService = settingsService;
         this.departmentService = departmentService;
+        this.nowService = nowService;
     }
 
     @Override
@@ -86,7 +90,7 @@ public class ApplicationInteractionServiceImpl implements ApplicationInteraction
 
         application.setStatus(ApplicationStatus.WAITING);
         application.setApplier(applier);
-        application.setApplicationDate(LocalDate.now(UTC));
+        application.setApplicationDate(nowService.now());
 
         final Application savedApplication = applicationService.save(application);
 
@@ -176,7 +180,7 @@ public class ApplicationInteractionServiceImpl implements ApplicationInteraction
 
         applicationForLeave.setStatus(ApplicationStatus.TEMPORARY_ALLOWED);
         applicationForLeave.setBoss(privilegedUser);
-        applicationForLeave.setEditedDate(LocalDate.now(UTC));
+        applicationForLeave.setEditedDate(nowService.now());
         final Application savedApplication = applicationService.save(applicationForLeave);
 
         LOG.info("Temporary allowed application for leave: {}", savedApplication);
@@ -203,7 +207,7 @@ public class ApplicationInteractionServiceImpl implements ApplicationInteraction
 
         applicationForLeave.setStatus(ApplicationStatus.ALLOWED);
         applicationForLeave.setBoss(privilegedUser);
-        applicationForLeave.setEditedDate(LocalDate.now(UTC));
+        applicationForLeave.setEditedDate(nowService.now());
         final Application savedApplication = applicationService.save(applicationForLeave);
 
         LOG.info("Allowed application for leave: {}", savedApplication);
@@ -226,7 +230,7 @@ public class ApplicationInteractionServiceImpl implements ApplicationInteraction
 
         application.setStatus(ApplicationStatus.REJECTED);
         application.setBoss(privilegedUser);
-        application.setEditedDate(LocalDate.now(UTC));
+        application.setEditedDate(nowService.now());
         final Application savedApplication = applicationService.save(application);
 
         LOG.info("Rejected application for leave: {}", savedApplication);
@@ -254,7 +258,7 @@ public class ApplicationInteractionServiceImpl implements ApplicationInteraction
         Person person = application.getPerson();
 
         application.setCanceller(canceller);
-        application.setCancelDate(LocalDate.now(UTC));
+        application.setCancelDate(nowService.now());
 
         if (application.hasStatus(ApplicationStatus.ALLOWED) ||
             application.hasStatus(ApplicationStatus.TEMPORARY_ALLOWED)) {
@@ -294,11 +298,12 @@ public class ApplicationInteractionServiceImpl implements ApplicationInteraction
 
     private void cancelApplication(Application application, Person canceller, Optional<String> comment) {
 
-        /*
-         * Only Office can cancel allowed applications for leave directly,
-         * users have to request cancellation
-         */
         if (canceller.hasRole(OFFICE)) {
+            /*
+             * Only Office can cancel allowed applications for leave directly,
+             * users have to request cancellation
+             */
+
             application.setStatus(ApplicationStatus.CANCELLED);
             final Application savedApplication = applicationService.save(application);
 
@@ -310,10 +315,25 @@ public class ApplicationInteractionServiceImpl implements ApplicationInteraction
             if (!canceller.equals(savedApplication.getPerson())) {
                 applicationMailService.sendCancelledByOfficeNotification(savedApplication, savedComment);
             }
-        } else {
+
+        } else if (canceller.equals(application.getPerson()) && application.getStartDate().isAfter(nowService.now())) {
             /*
              * Users cannot cancel already allowed applications
-             * directly. Their commentStatus will be CANCEL_REQUESTED
+             * directly only if the vacation has not yet started.
+             */
+
+            application.setStatus(ApplicationStatus.CANCELLED);
+
+            applicationService.save(application);
+
+            LOG.info("Cancelled application for leave (by same person, before leave started): {}", application);
+
+            commentService.create(application, ApplicationAction.CANCELLED, comment, canceller);
+
+
+        } else {
+             /*
+             * If it has started, their commentStatus will be CANCEL_REQUESTED
              * and the application.status will remain ALLOWED until
              * the office or a boss approves the request.
              */
@@ -354,18 +374,18 @@ public class ApplicationInteractionServiceImpl implements ApplicationInteraction
             LocalDate minDateForNotification = application.getApplicationDate()
                 .plusDays(MIN_DAYS_LEFT_BEFORE_REMINDING_IS_POSSIBLE);
 
-            if (minDateForNotification.isAfter(LocalDate.now(UTC))) {
+            if (minDateForNotification.isAfter(nowService.now())) {
                 throw new ImpatientAboutApplicationForLeaveProcessException("It's too early to remind the bosses!");
             }
         }
 
-        if (remindDate != null && remindDate.isEqual(LocalDate.now(UTC))) {
+        if (remindDate != null && remindDate.isEqual(nowService.now())) {
             throw new RemindAlreadySentException("Reminding is possible maximum one time per day!");
         }
 
         applicationMailService.sendRemindBossNotification(application);
 
-        application.setRemindDate(LocalDate.now(UTC));
+        application.setRemindDate(nowService.now());
         return applicationService.save(application);
     }
 
