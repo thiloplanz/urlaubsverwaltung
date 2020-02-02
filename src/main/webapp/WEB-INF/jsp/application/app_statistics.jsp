@@ -1,42 +1,20 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="uv" tagdir="/WEB-INF/tags" %>
-
+<%@taglib prefix="asset" uri = "/WEB-INF/asset.tld"%>
 
 <!DOCTYPE html>
-<html>
+<html lang="${language}">
 
 <head>
-    <uv:head/>
-    <script type="text/javascript">
-        $(document).ready(function () {
-
-            $("table.sortable").tablesorter({
-                sortList: [[1, 0]],
-                headers: {
-                    0: {sorter: false},
-                    3: {sorter: false},
-                    4: {sorter: false},
-                    5: {sorter: 'commaNumber'},
-                    6: {sorter: 'commaNumber'},
-                    7: {sorter: 'commaNumber'}
-                },
-                textExtraction: function (node) {
-                    var sortable = $(node).find('.sortable');
-
-                    if (sortable.length > 0) {
-                        return sortable[0].innerHTML;
-                    }
-
-                    return node.innerHTML;
-                }
-            });
-
-        });
-    </script>
+    <title>
+        <spring:message code="applications.statistics.header.title"/>
+    </title>
+    <uv:custom-head/>
+    <script defer src="<asset:url value='npm.tablesorter.js' />"></script>
+    <script defer src="<asset:url value='app_statistics.js' />"></script>
 </head>
 
 <body>
@@ -89,18 +67,18 @@
                         </div>
                     </c:when>
                     <c:otherwise>
-                        <table cellspacing="0" class="list-table sortable tablesorter">
+                        <table class="list-table sortable tablesorter">
                             <thead class="hidden-xs hidden-sm">
                             <tr>
-                                <th class="hidden-print"><%-- placeholder to ensure correct number of th --%></th>
-                                <th class="sortable-field"><spring:message code="person.data.firstName"/></th>
-                                <th class="sortable-field"><spring:message code="person.data.lastName"/></th>
-                                <th><%-- placeholder to ensure correct number of th --%></th>
-                                <th class="hidden"><%-- placeholder to ensure correct number of th --%></th>
-                                <th class="hidden"><%-- placeholder to ensure correct number of th --%></th>
-                                <th class="sortable-field"><spring:message code="applications.statistics.allowed"/></th>
-                                <th class="sortable-field"><spring:message code="applications.statistics.waiting"/></th>
-                                <th class="sortable-field"><spring:message code="applications.statistics.left"/> (<c:out
+                                <th scope="col" class="hidden-print"><%-- placeholder to ensure correct number of th --%></th>
+                                <th scope="col" class="sortable-field"><spring:message code="person.data.firstName"/></th>
+                                <th scope="col" class="sortable-field"><spring:message code="person.data.lastName"/></th>
+                                <th scope="col"><%-- placeholder to ensure correct number of th --%></th>
+                                <th scope="col" class="hidden"><%-- placeholder to ensure correct number of th --%></th>
+                                <th scope="col" class="hidden"><%-- placeholder to ensure correct number of th --%></th>
+                                <th scope="col" class="sortable-field"><spring:message code="applications.statistics.allowed"/></th>
+                                <th scope="col" class="sortable-field"><spring:message code="applications.statistics.waiting"/></th>
+                                <th scope="col" class="sortable-field"><spring:message code="applications.statistics.left"/> (<c:out
                                     value="${from.year}"/>)
                                 </th>
                             </tr>
@@ -136,7 +114,7 @@
                                     <td class="hidden-xs hidden-sm number">
                                         <strong class="sortable">
                                             <uv:number
-                                            number="${statistic.totalAllowedVacationDays}"/>
+                                                number="${statistic.totalAllowedVacationDays}"/>
                                         </strong>
                                         <spring:message code="duration.days"/>
                                         <c:forEach items="${vacationTypes}" var="type">
@@ -149,7 +127,7 @@
                                     <td class="hidden-xs hidden-sm number">
                                         <strong class="sortable">
                                             <uv:number
-                                            number="${statistic.totalWaitingVacationDays}"/>
+                                                number="${statistic.totalWaitingVacationDays}"/>
                                         </strong>
                                         <spring:message code="duration.days"/>
                                         <c:forEach items="${vacationTypes}" var="type">

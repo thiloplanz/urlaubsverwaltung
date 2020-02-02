@@ -4,21 +4,6 @@
 
 <spring:url var="URL_PREFIX" value="/web"/>
 
-<script type="text/javascript">
-
-  <%-- UGLY FIX BECAUSE BOOTSTRAP DROPDOWN IN NAVBAR NOT WORKING ON SOME MOBILE PHONES --%>
-
-  $('.dropdown-toggle').on("click", function (event) {
-    event.preventDefault();
-    setTimeout($.proxy(function () {
-      if ('ontouchstart' in document.documentElement) {
-        $(this).siblings('.dropdown-backdrop').off().remove();
-      }
-    }, this), 0);
-  });
-
-</script>
-
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -69,9 +54,9 @@
 
         <sec:authorize access="hasAnyAuthority('DEPARTMENT_HEAD', 'BOSS', 'OFFICE', 'SECOND_STAGE_AUTHORITY')">
           <li>
-            <a href="${URL_PREFIX}/staff?active=true">
+            <a href="${URL_PREFIX}/person?active=true">
               <i class="fa fa-fw fa-user" aria-hidden="true"></i>
-              <spring:message code="nav.staff.title"/>
+              <spring:message code="nav.person.title"/>
             </a>
           </li>
         </sec:authorize>

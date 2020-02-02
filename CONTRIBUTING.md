@@ -26,7 +26,6 @@ learn how to disclose them responsibly.
 
 ## Pull Request Contribution
 
-Every contributor has to add herself/himself to [AUTHORS.md](AUTHORS.md) to grant full and irrevocable copyright to the Urlaubsverwaltung, otherwise a contribution is not possible.
 New pull requests will be labeled with status of process as shown below:
 
 ![Pull request workflow](docs/workflow-pullrequests.svg)
@@ -54,7 +53,7 @@ automatically use our EditorConfig.
 
 ### Building from Source
 The Urlaubsverwaltungs source can be build from the command line using
-[Apache Maven](http://maven.apache.org/run-maven/index.html) on JDK 1.8 or above.
+[Apache Maven](http://maven.apache.org/run-maven/index.html) on JDK 11 or above.
 We include '`Maven Wrapper`' scripts (`./mvnw` or `mvnw.bat`) that you can run rather
 than needing to install Maven locally.
 

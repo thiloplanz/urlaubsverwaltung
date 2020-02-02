@@ -5,12 +5,15 @@
 <%@taglib prefix="uv" tagdir="/WEB-INF/tags" %>
 
 <!DOCTYPE html>
-<html>
+<html lang="${language}">
 
 <spring:url var="URL_PREFIX" value="/web"/>
 
 <head>
-    <uv:head/>
+    <title>
+        <spring:message code="person.details.header.title" arguments="${person.niceName}"/>
+    </title>
+    <uv:custom-head/>
 </head>
 
 <body>
@@ -38,7 +41,7 @@
                 <legend>
                     <spring:message code="person.details.masterData.title"/>
                     <sec:authorize access="hasAuthority('OFFICE')">
-                        <a href="${URL_PREFIX}/staff/${person.id}/edit" class="fa-action pull-right" aria-hidden="true"
+                        <a href="${URL_PREFIX}/person/${person.id}/edit" class="fa-action pull-right" aria-hidden="true"
                            data-title="<spring:message code="action.edit"/>">
                             <i class="fa fa-pencil" aria-hidden="true"></i>
                         </a>
@@ -85,9 +88,9 @@
             <div class="col-xs-12 col-sm-12 col-md-6">
                 <legend>
                     <spring:message code="person.details.annualVacation.title"/>
-                    <uv:year-selector year="${year}" hrefPrefix="${URL_PREFIX}/staff/${person.id}?year="/>
+                    <uv:year-selector year="${year}" hrefPrefix="${URL_PREFIX}/person/${person.id}?year="/>
                     <sec:authorize access="hasAuthority('OFFICE')">
-                        <a href="${URL_PREFIX}/staff/${person.id}/account?year=${param.year}"
+                        <a href="${URL_PREFIX}/person/${person.id}/account?year=${param.year}"
                            class="fa-action pull-right" aria-hidden="true"
                            data-title="<spring:message code="action.edit"/>">
                             <i class="fa fa-pencil" aria-hidden="true"></i>
@@ -99,7 +102,7 @@
                 <legend>
                     <spring:message code="person.details.workingTime.title"/>
                     <sec:authorize access="hasAuthority('OFFICE')">
-                        <a href="${URL_PREFIX}/staff/${person.id}/workingtime"
+                        <a href="${URL_PREFIX}/person/${person.id}/workingtime"
                            class="fa-action pull-right" aria-hidden="true"
                            data-title="<spring:message code="action.edit"/>">
                             <i class="fa fa-pencil" aria-hidden="true"></i>

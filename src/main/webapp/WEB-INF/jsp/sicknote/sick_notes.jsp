@@ -1,26 +1,30 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="uv" tagdir="/WEB-INF/tags" %>
-
+<%@taglib prefix="asset" uri = "/WEB-INF/asset.tld"%>
 
 <!DOCTYPE html>
-<html>
+<html lang="${language}">
 
 <head>
-    <uv:head/>
-    <script type="text/javascript">
-        $(document).ready(function () {
-
-            $("table.sortable").tablesorter({
-                sortList: [[1, 0]]
-            });
-
-        });
-
+    <title>
+        <spring:message code="sicknotes.header.title"/>
+    </title>
+    <uv:custom-head/>
+    <script>
+        window.uv = {};
+        window.uv.personId = '<c:out value="${person.id}" />';
+        window.uv.webPrefix = "<spring:url value='/web' />";
+        window.uv.apiPrefix = "<spring:url value='/api' />";
+        window.uv.sickNote = {};
+        window.uv.sickNote.id = "<c:out value="${sickNote.id}" />";
+        window.uv.sickNote.person = {};
+        window.uv.sickNote.person.id = "<c:out value="${sickNote.person.id}" />";
     </script>
+    <script defer type="text/javascript" src="<asset:url value='npm.tablesorter.js' />"></script>
+    <script defer type="text/javascript" src="<asset:url value='sick_notes.js' />"></script>
 </head>
 
 <body>
@@ -64,22 +68,22 @@
                     <spring:message code="filter.validity"/> <uv:date date="${today}"/>
                 </p>
 
-                <table class="list-table selectable-table sortable tablesorter" cellspacing="0">
+                <table class="list-table selectable-table sortable tablesorter">
                     <thead class="hidden-xs hidden-sm">
                     <tr>
-                        <th class="hidden-print"></th>
-                        <th class="sortable-field"><spring:message code="person.data.firstName"/></th>
-                        <th class="sortable-field"><spring:message code="person.data.lastName"/></th>
-                        <th class="hidden"><%-- tablesorter placeholder for first name and last name column in xs screen --%></th>
-                        <th class="sortable-field"><spring:message code="sicknotes.daysOverview.sickDays.title"/></th>
-                        <th class="sortable-field"><spring:message
+                        <th scope="col" class="hidden-print"></th>
+                        <th scope="col" class="sortable-field"><spring:message code="person.data.firstName"/></th>
+                        <th scope="col" class="sortable-field"><spring:message code="person.data.lastName"/></th>
+                        <th scope="col" class="hidden"><%-- tablesorter placeholder for first name and last name column in xs screen --%></th>
+                        <th scope="col" class="sortable-field"><spring:message code="sicknotes.daysOverview.sickDays.title"/></th>
+                        <th scope="col" class="sortable-field"><spring:message
                             code="sicknotes.daysOverview.sickDays.child.title"/></th>
-                        <th class="hidden"><%-- tablesorter placeholder for sick days column in xs screen --%></th>
+                        <th scope="col" class="hidden"><%-- tablesorter placeholder for sick days column in xs screen --%></th>
                     </tr>
                     </thead>
                     <tbody>
                     <c:forEach items="${persons}" var="person">
-                    <tr onclick="navigate('${URL_PREFIX}/staff/${person.id}/overview#anchorSickNotes');">
+                    <tr onclick="navigate('${URL_PREFIX}/person/${person.id}/overview#anchorSickNotes');">
                         <td class="is-centered hidden-print">
                             <div class="gravatar img-circle hidden-print"
                                  data-gravatar="<c:out value='${person.gravatarURL}?d=mm&s=60'/>"></div>

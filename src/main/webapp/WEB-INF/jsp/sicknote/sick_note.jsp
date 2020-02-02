@@ -2,14 +2,23 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="uv" tagdir="/WEB-INF/tags" %>
+<%@taglib prefix="asset" uri = "/WEB-INF/asset.tld"%>
 
 <!DOCTYPE html>
-<html>
+<html lang="${language}">
+
+<c:set var="SICK_NOTE_MESSAGEKEY">
+    <spring:message code='${sickNote.sickNoteType.messageKey}'/>
+</c:set>
+
 <head>
-    <uv:head/>
+    <title>
+        <spring:message code="sicknote.header.title" arguments="${SICK_NOTE_MESSAGEKEY}, ${sickNote.person.niceName}"/>
+    </title>
+    <uv:custom-head/>
+    <script defer src="<asset:url value='sick_note.js' />"></script>
 </head>
 <body>
 
@@ -89,9 +98,6 @@
                     <span class="box-text">
                         <h5 class="is-inline-block is-sticky"><c:out value="${sickNote.person.niceName}"/></h5>
 
-                        <c:set var="SICK_NOTE_MESSAGEKEY">
-                            <spring:message code='${sickNote.sickNoteType.messageKey}'/>
-                        </c:set>
                         <spring:message code="sicknotes.details.title" arguments="${SICK_NOTE_MESSAGEKEY}"/>
 
                         <c:choose>
@@ -188,14 +194,24 @@
                                 <c:out value="${comment.person.niceName}"/>
                             </td>
                             <td>
-                                <uv:date date="${comment.date}"/>:
-                                <br/>
                                 <c:choose>
                                     <c:when test="${empty comment.text}">
                                         <spring:message code="sicknote.progress.${comment.action}"/>
+                                        <uv:date date="${comment.date}"/>
                                     </c:when>
                                     <c:otherwise>
-                                        <c:out value="${comment.text}"/>
+                                        <spring:message code="sicknote.progress.${comment.action}"/>
+                                        <uv:date date="${comment.date}"/>
+                                        <c:choose>
+                                            <c:when test="${comment.action == 'COMMENTED'}">
+                                                :
+                                            </c:when>
+                                            <c:otherwise>
+                                                <spring:message code="sicknote.progress.comment"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <br/>
+                                        <em><c:out value="${comment.text}"/></em>
                                     </c:otherwise>
                                 </c:choose>
                             </td>
@@ -242,7 +258,7 @@
                 </sec:authorize>
 
                 <legend class="hidden-print">
-                    <spring:message code="sicknote.data.staff"/>
+                    <spring:message code="sicknote.data.person"/>
                 </legend>
 
                 <uv:person person="${sickNote.person}" cssClass="hidden-print"/>

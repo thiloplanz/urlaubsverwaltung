@@ -4,12 +4,16 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="uv" tagdir="/WEB-INF/tags" %>
-
+<%@taglib prefix="asset" uri = "/WEB-INF/asset.tld"%>
 
 <!DOCTYPE html>
-<html>
+<html lang="${language}">
 <head>
-    <uv:head/>
+    <title>
+        <spring:message code="person.form.workingTime.header.title" arguments="${person.niceName}"/>
+    </title>
+    <uv:custom-head/>
+    <script defer src="<asset:url value='workingtime_form.js' />"></script>
 </head>
 
 <body>
@@ -21,7 +25,7 @@
 <div class="content">
     <div class="container">
 
-        <form:form method="POST" action="${URL_PREFIX}/staff/${person.id}/workingtime" modelAttribute="workingTime"
+        <form:form method="POST" action="${URL_PREFIX}/person/${person.id}/workingtime" modelAttribute="workingTime"
                    class="form-horizontal">
 
             <div class="row">

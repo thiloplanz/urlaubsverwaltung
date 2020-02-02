@@ -5,9 +5,12 @@
 <%@taglib prefix="uv" tagdir="/WEB-INF/tags" %>
 
 <!DOCTYPE html>
-<html>
+<html lang="${language}">
 <head>
-    <uv:head/>
+    <title>
+        <spring:message code="overtime.details.header.title"/>
+    </title>
+    <uv:custom-head/>
 </head>
 <body>
 
@@ -88,7 +91,7 @@
             </div>
             <div class="col-xs-12 col-md-6">
                 <legend class="hidden-print">
-                    <spring:message code="overtime.data.staff"/>
+                    <spring:message code="overtime.data.person"/>
                 </legend>
                 <uv:person person="${record.person}" cssClass="hidden-print"/>
                 <uv:overtime-total hours="${overtimeTotal}"/>
