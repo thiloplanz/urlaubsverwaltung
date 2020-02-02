@@ -1,6 +1,8 @@
 package org.synyx.urlaubsverwaltung.absence.api;
 
 import org.synyx.urlaubsverwaltung.api.RestApiDateFormat;
+import org.synyx.urlaubsverwaltung.application.domain.VacationCategory;
+import org.synyx.urlaubsverwaltung.sicknote.SickNoteCategory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,15 +26,28 @@ public class DayAbsence {
     private final String type;
     private final String status;
     private final String href;
+    private final String category;
 
-    DayAbsence(LocalDate date, BigDecimal dayLength, String absencePeriodName, Type type, String status, Integer id) {
+    public DayAbsence(LocalDate date, BigDecimal dayLength, String absencePeriodName, VacationCategory category, String status, Integer id) {
 
         this.date = date.format(DateTimeFormatter.ofPattern(RestApiDateFormat.DATE_PATTERN));
         this.dayLength = dayLength;
         this.absencePeriodName = absencePeriodName;
-        this.type = type.name();
+        this.type = Type.VACATION.name();
         this.status = status;
         this.href = id == null ? "" : id.toString();
+        this.category = category.name();
+    }
+
+    public DayAbsence(LocalDate date, BigDecimal dayLength, String absencePeriodName, SickNoteCategory category, String status, Integer id) {
+
+        this.date = date.format(DateTimeFormatter.ofPattern(RestApiDateFormat.DATE_PATTERN));
+        this.dayLength = dayLength;
+        this.absencePeriodName = absencePeriodName;
+        this.type = Type.SICK_NOTE.name();
+        this.status = status;
+        this.href = id == null ? "" : id.toString();
+        this.category = category.name();
     }
 
     public String getDate() {
@@ -68,4 +83,10 @@ public class DayAbsence {
 
         return href;
     }
+
+    public String getCategory() {
+
+        return category;
+    }
+
 }

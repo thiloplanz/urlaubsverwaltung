@@ -47,15 +47,15 @@ $(function() {
         dayPublicHolidayFull              : 'datepicker-day-public-holiday-full',
         dayPublicHolidayMorning           : 'datepicker-day-public-holiday-morning',
         dayPublicHolidayNoon              : 'datepicker-day-public-holiday-noon',
-        dayPersonalHolidayFull            : 'datepicker-day-personal-holiday-full',
-        dayPersonalHolidayFullApproved    : 'datepicker-day-personal-holiday-full-approved',
-        dayPersonalHolidayMorning         : 'datepicker-day-personal-holiday-morning',
-        dayPersonalHolidayMorningApproved : 'datepicker-day-personal-holiday-morning-approved',
-        dayPersonalHolidayNoon            : 'datepicker-day-personal-holiday-noon',
-        dayPersonalHolidayNoonApproved    : 'datepicker-day-personal-holiday-noon-approved',
-        daySickDayFull                    : 'datepicker-day-sick-note-full',
-        daySickDayMorning                 : 'datepicker-day-sick-note-morning',
-        daySickDayNoon                    : 'datepicker-day-sick-note-noon',
+        dayPersonalHolidayFull            : 'datepicker-day-personal-holiday-full datepicker-day-personal-holiday-{{category}}',
+        dayPersonalHolidayFullApproved    : 'datepicker-day-personal-holiday-full-approved datepicker-day-personal-holiday-{{category}}',
+        dayPersonalHolidayMorning         : 'datepicker-day-personal-holiday-morning datepicker-day-personal-holiday-{{category}}',
+        dayPersonalHolidayMorningApproved : 'datepicker-day-personal-holiday-morning-approved datepicker-day-personal-holiday-{{category}}',
+        dayPersonalHolidayNoon            : 'datepicker-day-personal-holiday-noon datepicker-day-personal-holiday-{{category}}',
+        dayPersonalHolidayNoonApproved    : 'datepicker-day-personal-holiday-noon-approved datepicker-day-personal-holiday-{{category}}',
+        daySickDayFull                    : 'datepicker-day-sick-note-full datepicker-day-sick-note-{{category}}',
+        daySickDayMorning                 : 'datepicker-day-sick-note-morning datepicker-day-sick-note-{{category}}',
+        daySickDayNoon                    : 'datepicker-day-sick-note-noon datepicker-day-sick-note-{{category}}',
         next                              : 'datepicker-next',
         previous                          : 'datepicker-prev',
         month                             : 'datepicker-month',
@@ -142,6 +142,9 @@ $(function() {
             },
             status : function(date) {
                 return holidayService.getStatus(date);
+            },
+            absenceCategory: function(date) {
+                return holidayService.getAbsenceCategory(date);
             }
         };
 
@@ -378,6 +381,39 @@ $(function() {
 
             },
 
+            getAbsenceCategory: function (date) {
+
+                var year = getYear(date);
+                var formattedDate = format(date, 'yyyy-MM-dd');
+
+                if (!_CACHE['holiday']) {
+                    return '';
+                }
+
+                if(_CACHE['holiday'][year]) {
+
+                    var holiday = findWhere(_CACHE['holiday'][year], {date: formattedDate});
+
+                    if(holiday) {
+                        return holiday.category;
+                    }
+
+                }
+
+                if(_CACHE['sick'][year]) {
+
+                    var sickDay = findWhere(_CACHE['sick'][year], {date: formattedDate});
+
+                    if(sickDay) {
+                        return sickDay.category;
+                    }
+
+                }
+
+                return '';
+
+            },
+
             /**
              *
              * @param {Date} from
@@ -600,6 +636,7 @@ $(function() {
         function renderDay(date) {
 
             function classes() {
+                var category = assert.absenceCategory(date);
                 return [
                     assert.isToday                          (date) ? CSS.dayToday                          : '',
                     assert.isWeekend                        (date) ? CSS.dayWeekend                        : '',
@@ -616,7 +653,7 @@ $(function() {
                     assert.isSickDayFull                    (date) ? CSS.daySickDayFull                    : '',
                     assert.isSickDayMorning                 (date) ? CSS.daySickDayMorning                 : '',
                     assert.isSickDayNoon                    (date) ? CSS.daySickDayNoon                    : '',
-                ].filter(Boolean).join(' ');
+                ].filter(Boolean).join(' ').replace("{{category}}", category);
             }
 
             function isSelectable() {

@@ -57,8 +57,9 @@ $(function () {
                 listItem.days
                   .forEach(currentDay => {
                       let absences = response.response.absences;
+                      const currentAbsence = absences.find( (currentValue) => currentDay.dayText == currentValue.date );
 
-                      currentDay.cssClass = '';
+                      currentDay.cssClass = (currentAbsence && currentAbsence.category) ? ' vacationOverview-day-category-'+currentAbsence.category : "";
 
                       if (absences.find(currentValue => compare(currentDay, currentValue, "WAITING", "VACATION", 'FULL'))) {
                         currentDay.cssClass += ' vacationOverview-day-personal-holiday-status-WAITING';

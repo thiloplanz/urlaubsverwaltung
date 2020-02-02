@@ -126,8 +126,13 @@ function colorizeDate(date, publicHolidays, absences) {
   } else {
 
     const dateString = $.datepicker.formatDate("yy-mm-dd", date);
+    const absence = findWhere(absences, {date: dateString });
+    const category = absence && absence.category;
+    if (!absence) {
+      absences = [];
+    }
 
-    const fitsCriteria = (list, filterAttributes) => Boolean(findWhere(list, { ...filterAttributes, date: dateString }));
+    const fitsCriteria = (list, filterAttributes) => Boolean(findWhere(list, { ...filterAttributes, }));
 
     const isPast = () => false;
     const isPublicHolidayFull = () => fitsCriteria(publicHolidays, { absencePeriodName: 'FULL'});
@@ -150,18 +155,18 @@ function colorizeDate(date, publicHolidays, absences) {
       isPublicHolidayFull() && 'datepicker-day-public-holiday-full',
       isPublicHolidayMorning() && 'datepicker-day-public-holiday-morning',
       isPublicHolidayNoon() && 'datepicker-day-public-holiday-noon',
-      isPersonalHolidayFull() && 'datepicker-day-personal-holiday-full',
-      isPersonalHolidayFullApproved() && 'datepicker-day-personal-holiday-full-approved',
-      isPersonalHolidayMorning() && 'datepicker-day-personal-holiday-morning',
-      isPersonalHolidayMorningApproved() && 'datepicker-day-personal-holiday-morning-approved',
-      isPersonalHolidayNoon() && 'datepicker-day-personal-holiday-noon',
-      isPersonalHolidayNoonApproved() && 'datepicker-day-personal-holiday-noon-approved',
-      isSickDayFull() && 'datepicker-day-sick-note-full',
-      isSickDayMorning() && 'datepicker-day-sick-note-morning',
-      isSickDayNoon() && 'datepicker-day-sick-note-noon',
+      isPersonalHolidayFull() && 'datepicker-day-personal-holiday-full datepicker-day-personal-holiday-{{category}}',
+      isPersonalHolidayFullApproved() && 'datepicker-day-personal-holiday-full-approved datepicker-day-personal-holiday-{{category}}',
+      isPersonalHolidayMorning() && 'datepicker-day-personal-holiday-morning datepicker-day-personal-holiday-{{category}}',
+      isPersonalHolidayMorningApproved() && 'datepicker-day-personal-holiday-morning-approved datepicker-day-personal-holiday-{{category}}',
+      isPersonalHolidayNoon() && 'datepicker-day-personal-holiday-noon datepicker-day-personal-holiday-{{category}}',
+      isPersonalHolidayNoonApproved() && 'datepicker-day-personal-holiday-noon-approved datepicker-day-personal-holiday-{{category}}',
+      isSickDayFull() && 'datepicker-day-sick-note-full datepicker-day-sick-note-{{category}}',
+      isSickDayMorning() && 'datepicker-day-sick-note-morning datepicker-day-sick-note-{{category}}',
+      isSickDayNoon() && 'datepicker-day-sick-note-noon datepicker-day-sick-note-{{category}}',
     ].filter(Boolean);
 
-    return [true, cssClasses.join(" ").trim()];
+    return [true, cssClasses.join(" ").trim().replace("{{category}}", category)];
   }
 }
 

@@ -137,7 +137,7 @@ public class AbsenceApiController {
 
             while (!day.isAfter(endDate)) {
                 if (!day.isBefore(start) && !day.isAfter(end)) {
-                    absences.add(new DayAbsence(day, application.getDayLength().getDuration(), application.getDayLength().toString(), DayAbsence.Type.VACATION,
+                    absences.add(new DayAbsence(day, application.getDayLength().getDuration(), application.getDayLength().toString(), application.getVacationType().getCategory(),
                         application.getStatus().name(), application.getId()));
                 }
 
@@ -167,7 +167,7 @@ public class AbsenceApiController {
             while (!day.isAfter(endDate)) {
                 if (!day.isBefore(start) && !day.isAfter(end)) {
                     absences.add(new DayAbsence(day, sickNote.getDayLength().getDuration(),
-                        sickNote.getDayLength().toString(), DayAbsence.Type.SICK_NOTE, "ACTIVE",
+                        sickNote.getDayLength().toString(), sickNote.getSickNoteType().getCategory(), "ACTIVE",
                         sickNote.getId()));
                 }
 
