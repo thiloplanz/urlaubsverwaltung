@@ -13,6 +13,8 @@ public final class DepartmentConstants {
     public static final String DEPARTMENTS_ATTRIBUTE = "departments";
     public static final String DEPARTMENT_ATTRIBUTE = "department";
     public static final String SECOND_STAGE_DEPARTMENTS_ATTRIBUTE = "secondStageDepartments";
+    public static final String TIMELINE_DEPARTMENT_ATTRIBUTE = "timelineDepartment";
+
 
     private DepartmentConstants() {
 

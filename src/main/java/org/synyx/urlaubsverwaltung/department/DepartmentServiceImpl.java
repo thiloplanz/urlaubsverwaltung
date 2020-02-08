@@ -219,4 +219,26 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         return isOwnData || isPrivilegedUser;
     }
+
+    @Override
+    public List<Department> getRelevantDepartments(Person person){
+
+        if (person.hasRole(Role.BOSS) || person.hasRole(Role.OFFICE)) {
+            return getAllDepartments();
+        }
+
+        // NOTE: If the signed in user is only department head, he wants to see only the persons of his departments
+        if (person.hasRole(Role.DEPARTMENT_HEAD)) {
+            return getManagedDepartmentsOfDepartmentHead(person);
+        }
+
+        // NOTE: If the signed in user is second stage authority, he wants to see only the persons of his departments
+        if (person.hasRole(Role.SECOND_STAGE_AUTHORITY)) {
+            return getManagedDepartmentsOfSecondStageAuthority(person);
+        }
+
+        // normal users can see their own departments only
+        return getAssignedDepartmentsOfMember(person);
+    }
+
 }

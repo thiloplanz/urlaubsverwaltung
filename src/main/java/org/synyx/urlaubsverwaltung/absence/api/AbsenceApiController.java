@@ -1,10 +1,12 @@
 package org.synyx.urlaubsverwaltung.absence.api;
 
+import de.jollyday.Holiday;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,18 +16,23 @@ import org.synyx.urlaubsverwaltung.api.RestApiDateFormat;
 import org.synyx.urlaubsverwaltung.application.domain.Application;
 import org.synyx.urlaubsverwaltung.application.domain.ApplicationStatus;
 import org.synyx.urlaubsverwaltung.application.service.ApplicationService;
+import org.synyx.urlaubsverwaltung.calendarintegration.absence.AbsenceType;
+import org.synyx.urlaubsverwaltung.department.Department;
+import org.synyx.urlaubsverwaltung.department.DepartmentService;
+import org.synyx.urlaubsverwaltung.holiday.api.PublicHolidayResponse;
 import org.synyx.urlaubsverwaltung.person.Person;
 import org.synyx.urlaubsverwaltung.person.PersonService;
 import org.synyx.urlaubsverwaltung.security.SecurityRules;
+import org.synyx.urlaubsverwaltung.settings.FederalState;
 import org.synyx.urlaubsverwaltung.sicknote.SickNote;
 import org.synyx.urlaubsverwaltung.sicknote.SickNoteService;
 import org.synyx.urlaubsverwaltung.util.DateUtil;
+import org.synyx.urlaubsverwaltung.workingtime.PublicHolidaysService;
+import org.synyx.urlaubsverwaltung.workingtime.WorkingTimeService;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Integer.parseInt;
@@ -49,11 +56,20 @@ public class AbsenceApiController {
         this.sickNoteService = sickNoteService;
     }
 
+    @Autowired
+    private PublicHolidaysService publicHolidayService;
+
+    @Autowired
+    private WorkingTimeService workingTimeService;
+
+    @Autowired
+    private DepartmentService departmentService;
+
     @ApiOperation(
         value = "Get all absences for a certain period and person",
         notes = "Get all absences for a certain period and person"
     )
-    @GetMapping("/absences")
+    @GetMapping(value="/absences", params="person")
     @PreAuthorize(SecurityRules.IS_OFFICE + " or @userApiMethodSecurity.isSamePersonId(authentication, #personId)")
     public ResponseWrapper<DayAbsenceList> personsVacations(
         @ApiParam(value = "Year to get the absences for", defaultValue = RestApiDateFormat.EXAMPLE_YEAR)
@@ -177,4 +193,124 @@ public class AbsenceApiController {
 
         return absences;
     }
+
+    /** YADOS: This is a bit of facade method that combines the results of both /absences and /holidays
+     * for all department members (to reduce the number of HTTP requests when showing the overview
+     * calendar)
+     */
+
+    @ApiOperation(
+        value = "Get all absences and public holidays for a certain period and department",
+        notes = "Get all absences and public holidays for a certain period and department"
+    )
+    @GetMapping(value = "/absences", params = "department")
+    public ResponseWrapper<DepartmentAbsences> departmentVacations(
+        @ApiParam(value = "Year to get the absences for")
+        @RequestParam("year")
+            String year,
+        @ApiParam(value = "Month of year to get the absences for")
+        @RequestParam(value = "month", required = false)
+            String month,
+        @ApiParam(value = "ID of the department")
+        @RequestParam("department")
+            Integer departmentId) {
+
+        boolean hasYear = StringUtils.hasText(year);
+        boolean hasMonth = StringUtils.hasText(month);
+
+        if (hasYear && departmentId != null) {
+            try {
+                Optional<Department> deptOptional = departmentService.getDepartmentById(departmentId);
+
+                if (!deptOptional.isPresent()) {
+                    return new ResponseWrapper<>(new DepartmentAbsences(null, null, null));
+                }
+
+                LocalDate periodStart;
+                LocalDate periodEnd;
+
+                if (hasMonth) {
+                    periodStart = DateUtil.getFirstDayOfMonth(Integer.parseInt(year), Integer.parseInt(month));
+                    periodEnd = DateUtil.getLastDayOfMonth(Integer.parseInt(year), Integer.parseInt(month));
+                } else {
+                    periodStart = DateUtil.getFirstDayOfYear(Integer.parseInt(year));
+                    periodEnd = DateUtil.getLastDayOfYear(Integer.parseInt(year));
+                }
+
+                List<Person> persons = deptOptional.map(Department::getMembers).orElse(Collections.emptyList());
+
+                Map<Integer, List<DayAbsence>> absenceMap = new HashMap<>();
+                Map<Integer, String> calendars = new HashMap<>();
+                Map<String, List<PublicHolidayResponse>> catalog = new HashMap<>();
+
+                for (Person person : persons) {
+
+                    List<DayAbsence> absences = new ArrayList<>();
+                    absences.addAll(getVacations(periodStart, periodEnd, person));
+                    absences.addAll(getSickNotes(periodStart, periodEnd, person));
+                    absenceMap.put(person.getId(), absences);
+                    // A person's federal state might have changed during the period. We use the one
+                    // as of periodEnd. Since this is used for display only and not vacation days calculation
+                    // (and unlikely anyway) that should not be a problem.
+                    FederalState state = workingTimeService.getFederalStateForPerson(person, periodEnd);
+                    calendars.put(person.getId(), state.name());
+                    if (!catalog.containsKey(state.name())) {
+                        Collection<Holiday> holidays =
+                            hasMonth ? publicHolidayService.getHolidays(periodStart.getYear(), periodStart.getMonthValue(), state)
+                                : publicHolidayService.getHolidays(periodStart.getYear(), state);
+
+                        catalog.put(state.name(), holidays.stream().map(holiday ->
+                            new PublicHolidayResponse(holiday,
+                                publicHolidayService.getWorkingDurationOfDate(holiday.getDate(),
+                                    state), publicHolidayService.getAbsenceTypeOfDate(holiday.getDate(), state).name()))
+                            .collect(Collectors.toList()));
+
+                    }
+                }
+
+
+                return new ResponseWrapper<>(new DepartmentAbsences(catalog, absenceMap, calendars));
+            } catch (NumberFormatException ex) {
+                return new ResponseWrapper<>(new DepartmentAbsences(null, null, null));
+            }
+        }
+
+        return new ResponseWrapper<>(new DepartmentAbsences(null, null, null));
+    }
+
+
+    private class DepartmentAbsences {
+
+        private final Map<String, List<PublicHolidayResponse>> publicHolidays;
+
+        /** map personId => absences */
+        private final Map<Integer, List<DayAbsence>> personAbsences;
+
+        /** map personId => key into publicHolidays map */
+        private final Map<Integer, String> personPublicHolidays;
+
+        public DepartmentAbsences(Map<String, List<PublicHolidayResponse>> publicHolidays, Map<Integer, List<DayAbsence>> personAbsences, Map<Integer, String> personPublicHolidays) {
+
+            this.publicHolidays = publicHolidays;
+            this.personAbsences = personAbsences;
+            this.personPublicHolidays = personPublicHolidays;
+        }
+
+        public Map<String, List<PublicHolidayResponse>> getPublicHolidays() {
+
+            return publicHolidays;
+        }
+
+        public Map<Integer, List<DayAbsence>> getPersonAbsences() {
+
+            return personAbsences;
+        }
+
+        public Map<Integer, String> getPersonPublicHolidays() {
+
+            return personPublicHolidays;
+        }
+    }
+
+
 }

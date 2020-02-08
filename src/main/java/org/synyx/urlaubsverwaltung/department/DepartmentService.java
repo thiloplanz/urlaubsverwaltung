@@ -141,4 +141,12 @@ public interface DepartmentService {
      * @return {@code true} if the given user may access the data of the given person, else {@code false}
      */
     boolean isSignedInUserAllowedToAccessPersonData(Person signedInUser, Person person);
+
+    /**
+     * Get all the "relevant" departments for a given Person.
+     *
+     * This includes memberships, managed departments, etc.
+     * It is used to populate the department selector pulldown.
+     */
+    List<Department> getRelevantDepartments(Person person);
 }

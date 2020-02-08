@@ -17,7 +17,7 @@
         </c:otherwise>
     </c:choose>
 
-    <uv:year-selector year="${displayYear}" hrefPrefix="${URL_PREFIX}/person/${person.id}/overview?year="/>
+    <uv:year-selector year="${displayYear}" hrefPrefix="${URL_PREFIX}/person/${person.id}/overview?timelineDepartment=${param.timelineDepartment}&year="/>
 
     <uv:print/>
 

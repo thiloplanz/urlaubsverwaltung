@@ -38,6 +38,15 @@
   padding: 6px !important;
 }
 
+/* Yados: Overtime */
+
+.ui-datepicker-calendar td.holiday.holiday-OVERTIME a {
+  background: purple !important;
+}
+.ui-datepicker-calendar td.holiday.holiday-OVERTIME.halfworkday a {
+  background: linear-gradient(-45deg, purple 50%, #FAFAFA 50%) !important;
+}
+
 .ui-datepicker-calendar td a.ui-state-default,
 .ui-datepicker-calendar td span {
   color: var(--font-color) !important;

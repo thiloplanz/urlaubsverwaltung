@@ -6,14 +6,14 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 
-class PublicHolidayResponse {
+public class PublicHolidayResponse {
 
     private String date;
     private String description;
     private BigDecimal dayLength;
     private String absencePeriodName;
 
-    PublicHolidayResponse(Holiday holiday, BigDecimal dayLength, String absencePeriodName) {
+    public PublicHolidayResponse(Holiday holiday, BigDecimal dayLength, String absencePeriodName) {
 
         this.date = holiday.getDate().toString();
         this.description = holiday.getDescription(Locale.GERMAN);
