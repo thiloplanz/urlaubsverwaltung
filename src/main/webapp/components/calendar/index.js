@@ -50,11 +50,18 @@ if (window.yados && window.yados.timelineDepartmentId){
         dayToday              : 'datepicker-day-today',
         dayWeekend            : 'datepicker-day-weekend',
         dayPast               : 'datepicker-day-past',
-        dayHalf               : 'datepicker-day-half',
-        dayPublicHoliday      : 'datepicker-day-public-holiday',
-        dayPersonalHoliday    : 'datepicker-day-personal-holiday datepicker-day-personal-holiday-{{category}}',
-        daySickDay            : 'datepicker-day-sick-note datepicker-day-sick-note-{{category}}',
-        dayStatus             : 'datepicker-day-status-{{status}}',
+        dayPublicHolidayFull              : 'datepicker-day-public-holiday-full',
+        dayPublicHolidayMorning           : 'datepicker-day-public-holiday-morning',
+        dayPublicHolidayNoon              : 'datepicker-day-public-holiday-noon',
+        dayPersonalHolidayFull            : 'datepicker-day-personal-holiday-full datepicker-day-personal-holiday-{{category}}',
+        dayPersonalHolidayFullApproved    : 'datepicker-day-personal-holiday-full-approved datepicker-day-personal-holiday-{{category}}',
+        dayPersonalHolidayMorning         : 'datepicker-day-personal-holiday-morning datepicker-day-personal-holiday-{{category}}',
+        dayPersonalHolidayMorningApproved : 'datepicker-day-personal-holiday-morning-approved datepicker-day-personal-holiday-{{category}}',
+        dayPersonalHolidayNoon            : 'datepicker-day-personal-holiday-noon datepicker-day-personal-holiday-{{category}}',
+        dayPersonalHolidayNoonApproved    : 'datepicker-day-personal-holiday-noon-approved datepicker-day-personal-holiday-{{category}}',
+        daySickDayFull                    : 'datepicker-day-sick-note-full datepicker-day-sick-note-{{category}}',
+        daySickDayMorning                 : 'datepicker-day-sick-note-morning datepicker-day-sick-note-{{category}}',
+        daySickDayNoon                    : 'datepicker-day-sick-note-noon datepicker-day-sick-note-{{category}}',
         next                  : 'datepicker-next',
         previous              : 'datepicker-prev',
         week                  : 'datepicker-week',
@@ -85,20 +92,53 @@ if (window.yados && window.yados.timelineDepartmentId){
                     /* NOTE: Today is not in the past! */
                     return !isToday(date) && isPast(date);
                 },
-                isPublicHoliday: function(date, personId) {
-                    return holidayService.isPublicHoliday(date, personId);
+                isHalfDayAbsence: function(date, personId) {
+                  if (assert.isPersonalHolidayMorning(date, personId) || assert.isPersonalHolidayNoon(date, personId)) {
+                    return true;
+                  }
+                  if (assert.isSickDayMorning(date, personId) || assert.isSickDayNoon(date, personId)) {
+                    return true;
+                  }
+                  return assert.isPublicHolidayMorning(date, personId) || assert.isPublicHolidayNoon(date, personId);
                 },
-                isPersonalHoliday: function(date, personId) {
-                    return !isWeekend(date) && holidayService.isPersonalHoliday(date, personId);
+                isPublicHolidayFull: function(date, personId) {
+                    return holidayService.isPublicHolidayFull(date, personId);
                 },
-                isSickDay: function(date, personId) {
-                    return !isWeekend(date) && holidayService.isSickDay(date, personId);
+                isPublicHolidayMorning: function(date, personId) {
+                  return holidayService.isPublicHolidayMorning(date, personId);
                 },
-                isHalfDay: function(date, personId) {
-                  return !isWeekend(date) && holidayService.isHalfDay(date, personId);
+                isPublicHolidayNoon: function(date, personId) {
+                  return holidayService.isPublicHolidayNoon(date, personId);
                 },
-                title: function(date, personId) {
-                  return holidayService.getDescription(date, personId);
+                isPersonalHolidayFull: function(date, personId) {
+                    return !isWeekend(date) && holidayService.isPersonalHolidayFull(date, personId);
+                },
+                isPersonalHolidayFullApproved: function(date, personId) {
+                  return !isWeekend(date) && holidayService.isPersonalHolidayFullApproved(date, personId);
+                },
+                isPersonalHolidayMorning: function(date, personId) {
+                  return !isWeekend(date) && holidayService.isPersonalHolidayMorning(date, personId);
+                },
+                isPersonalHolidayMorningApproved: function(date, personId) {
+                  return !isWeekend(date) && holidayService.isPersonalHolidayMorningApproved(date, personId);
+                },
+                isPersonalHolidayNoon: function(date, personId) {
+                  return !isWeekend(date) && holidayService.isPersonalHolidayNoon(date, personId);
+                },
+                isPersonalHolidayNoonApproved: function(date, personId) {
+                  return !isWeekend(date) && holidayService.isPersonalHolidayNoonApproved(date, personId);
+                },
+                isSickDayFull: function(date, personId) {
+                    return !isWeekend(date) && holidayService.isSickDayFull(date, personId);
+                },
+                isSickDayMorning: function(date, personId) {
+                  return !isWeekend(date) && holidayService.isSickDayMorning(date, personId);
+                },
+                isSickDayNoon: function(date, personId) {
+                  return !isWeekend(date) && holidayService.isSickDayNoon(date, personId);
+                },
+                title: function(date) {
+                  return holidayService.getDescription(date);
                 },
                 absenceId: function(date, personId) {
                   return holidayService.getAbsenceId(date, personId);
@@ -131,6 +171,8 @@ if (window.yados && window.yados.timelineDepartmentId){
         var webPrefix;
         var apiPrefix;
         var departmentId;
+        var viewerPersonId;
+
 
         function paramize(p) {
             var result = '?';
@@ -166,17 +208,17 @@ if (window.yados && window.yados.timelineDepartmentId){
         }
 
 
-        function isOfType(type) {
+        function isOfType(type, matcherAttributes) {
           return function (date, personId) {
 
-            var year = getYear(date);
-            var formattedDate = format(date, 'yyyy-MM-dd');
+            const year = getYear(date);
+            const formattedDate = format(date, 'yyyy-MM-dd');
 
             var holiday = CACHE_findDate(type, year, formattedDate, personId);
             if (type === 'publicHoliday') {
                 return holiday && holiday.dayLength < 1;
             } else {
-                return holiday;
+                return findWhere([holiday], {...matcherAttributes});
             }
           };
         }
@@ -203,37 +245,28 @@ if (window.yados && window.yados.timelineDepartmentId){
             }
         }
 
-        var HolidayService = {
+        const absencePeriod = Object.freeze({
+          FULL: 'FULL',
+          MORNING: 'MORNING',
+          NOON: 'NOON',
+        });
 
-            isSickDay: isOfType('sick'),
+        const HolidayService = {
 
-            isPersonalHoliday: isOfType('holiday'),
+            isSickDayFull: isOfType('sick', { absencePeriodName: absencePeriod.FULL }),
+            isSickDayMorning: isOfType('sick', { absencePeriodName: absencePeriod.MORNING }),
+            isSickDayNoon: isOfType('sick', { absencePeriodName: absencePeriod.NOON }),
 
-            isPublicHoliday: isOfType('publicHoliday'),
+            isPersonalHolidayFull: isOfType('holiday', { absencePeriodName: absencePeriod.FULL, status: 'WAITING' }),
+            isPersonalHolidayFullApproved: isOfType('holiday', { absencePeriodName: absencePeriod.FULL, status: 'ALLOWED' }),
+            isPersonalHolidayMorning: isOfType('holiday', { absencePeriodName: absencePeriod.MORNING, status: 'WAITING' }),
+            isPersonalHolidayMorningApproved: isOfType('holiday', { absencePeriodName: absencePeriod.MORNING, status: 'ALLOWED' }),
+            isPersonalHolidayNoon: isOfType('holiday', { absencePeriodName: absencePeriod.NOON, status: 'WAITING' }),
+            isPersonalHolidayNoonApproved: isOfType('holiday', { absencePeriodName: absencePeriod.NOON, status: 'ALLOWED' }),
 
-            isHalfDay: function (date, personId) {
-
-                var year = getYear(date);
-                var formattedDate = format(date, 'yyyy-MM-dd');
-
-                var publicHoliday = CACHE_findDate('publicHoliday', year, formattedDate, personId)
-                if(publicHoliday && publicHoliday.dayLength === 0.5) {
-                  return true;
-                }
-
-                var personalHoliday = CACHE_findDate('holiday', year, formattedDate, personId);
-                if(personalHoliday && personalHoliday.dayLength === 0.5) {
-                  return true;
-                }
-
-
-                var sickDay = CACHE_findDate('sick', year, formattedDate, personId);
-                if(sickDay && sickDay.dayLength === 0.5) {
-                  return true;
-                }
-
-                return false;
-            },
+            isPublicHolidayFull: isOfType('publicHoliday', { absencePeriodName: absencePeriod.FULL }),
+            isPublicHolidayMorning: isOfType('publicHoliday', { absencePeriodName: absencePeriod.MORNING }),
+            isPublicHolidayNoon: isOfType('publicHoliday', { absencePeriodName: absencePeriod.NOON }),
 
             getDescription: function (date, personId) {
 
@@ -332,10 +365,10 @@ if (window.yados && window.yados.timelineDepartmentId){
              * @param {Date} from
              * @param {Date} [to]
              */
-            bookHoliday: function(from, to, personId) {
+            bookHoliday: function(from, to) {
 
                 var params = {
-                    personId: personId,
+                    personId: viewerPersonId,
                     from :      format(from, 'yyyy-MM-dd'),
                     to   : to ? format(to, 'yyyy-MM-dd') : undefined
                 };
@@ -385,7 +418,9 @@ if (window.yados && window.yados.timelineDepartmentId){
             create: function(_webPrefix, _apiPrefix, _personId, _departmentId) {
                 webPrefix = _webPrefix;
                 apiPrefix = _apiPrefix;
+                viewerPersonId = _personId;
                 departmentId  = _departmentId;
+                HolidayService.viewerPersonId = _personId;
                 return HolidayService;
             }
         };
@@ -438,7 +473,7 @@ if (window.yados && window.yados.timelineDepartmentId){
 
                 height:  90 + personIds.length * 40  ,
 
-                previousButton   : renderButton ( CSS.prev, '<i class="fa fa-chevron-left"></i>'),
+                previousButton   : renderButton ( CSS.previous, '<i class="fa fa-chevron-left"></i>'),
                 nextButton   : renderButton ( CSS.next, '<i class="fa fa-chevron-right"></i>'),
 
                 weeks: function() {
@@ -536,18 +571,25 @@ if (window.yados && window.yados.timelineDepartmentId){
         function renderDay(date, personId) {
 
             function classes() {
-                var status = assert.status(date, personId)
                 var category = assert.absenceCategory(date, personId)
                 return [
-                    assert.isToday           (date) ? CSS.dayToday           : '',
-                    assert.isWeekend         (date) ? CSS.dayWeekend         : '',
-                    assert.isPast            (date) ? CSS.dayPast            : '',
-                    assert.isPublicHoliday   (date, personId) ? CSS.dayPublicHoliday   : '',
-                    assert.isPersonalHoliday (date, personId) ? CSS.dayPersonalHoliday.replace("{{category}}", category) : '',
-                    assert.isSickDay         (date, personId) ? CSS.daySickDay.replace("{{category}}", category)         : '',
-                    assert.isHalfDay         (date, personId) ? CSS.dayHalf            : '',
-                    status             ? CSS.dayStatus.replace("{{status}}", status)   : ''
-                ].join(' ');
+                    assert.isToday                          (date) ? CSS.dayToday                          : '',
+                    assert.isWeekend                        (date) ? CSS.dayWeekend                        : '',
+                    assert.isPast                           (date) ? CSS.dayPast                           : '',
+                    assert.isPublicHolidayFull              (date) ? CSS.dayPublicHolidayFull              : '',
+                    assert.isPublicHolidayMorning           (date) ? CSS.dayPublicHolidayMorning           : '',
+                    assert.isPublicHolidayNoon              (date) ? CSS.dayPublicHolidayNoon              : '',
+                    assert.isPersonalHolidayFull            (date, personId) ? CSS.dayPersonalHolidayFull            : '',
+                    assert.isPersonalHolidayFullApproved    (date, personId) ? CSS.dayPersonalHolidayFullApproved    : '',
+                    assert.isPersonalHolidayMorning         (date, personId) ? CSS.dayPersonalHolidayMorning         : '',
+                    assert.isPersonalHolidayMorningApproved (date, personId) ? CSS.dayPersonalHolidayMorningApproved : '',
+                    assert.isPersonalHolidayNoon            (date, personId) ? CSS.dayPersonalHolidayNoon            : '',
+                    assert.isPersonalHolidayNoonApproved    (date, personId) ? CSS.dayPersonalHolidayNoonApproved    : '',
+                    assert.isSickDayFull                    (date, personId) ? CSS.daySickDayFull                    : '',
+                    assert.isSickDayMorning                 (date, personId) ? CSS.daySickDayMorning                 : '',
+                    assert.isSickDayNoon                    (date, personId) ? CSS.daySickDayNoon                    : '',
+                ].filter(Boolean).join(' ').replace("{{category}}", category);
+
             }
 
 
@@ -556,8 +598,8 @@ if (window.yados && window.yados.timelineDepartmentId){
 
                 // NOTE: Order is important here!
 
-                var isPersonalHoliday = assert.isPersonalHoliday(date, personId);
-                var isSickDay = assert.isSickDay(date, personId);
+                var isPersonalHoliday = assert.isPersonalHolidayFull(date, personId);
+                var isSickDay = assert.isSickDayFull(date, personId);
 
                 if(isPersonalHoliday || isSickDay) {
                   return true;
@@ -570,7 +612,7 @@ if (window.yados && window.yados.timelineDepartmentId){
                     return false;
                 }
 
-                return assert.isHalfDay(date, personId) || !assert.isPublicHoliday(date, personId);
+                return assert.isHalfDayAbsence(date, personId) || !assert.isPublicHolidayFull(date, personId);
             }
 
             return render(TMPL.day, {
@@ -651,7 +693,10 @@ if (window.yados && window.yados.timelineDepartmentId){
 
                 var dateThis = getDateFromElement(this);
 
-                if ( !isWithinInterval(dateThis, selectionFrom(), selectionTo()) ) {
+                const start = selectionFrom();
+                const end = selectionTo();
+
+                if ( !isValidDate(start) || !isValidDate(end) || !isWithinInterval(dateThis, { start, end }) ) {
 
                     clearSelection();
 
@@ -687,16 +732,18 @@ if (window.yados && window.yados.timelineDepartmentId){
                 var dateThis = getDateFromElement(this);
 
                 var isSelectable = $(this).attr("data-datepicker-selectable");
+                var personId = +($(this).closest('tr').attr('data-datepicker-person'))
+
                 var absenceId = $(this).attr('data-datepicker-absence-id');
                 var absenceType = $(this).attr('data-datepicker-absence-type');
-                var personId = $(this).closest('tr').attr('data-datepicker-person')
+                const viewerPersonId = holidayService.viewerPersonId;
 
-                if(isSelectable === "true" && absenceType === "VACATION" && absenceId !== "-1") {
+                if(personId === viewerPersonId && isSelectable === "true" && absenceType === "VACATION" && absenceId !== "-1") {
                     holidayService.navigateToApplicationForLeave(absenceId);
-                } else if(isSelectable === "true" && absenceType === "SICK_NOTE" && absenceId !== "-1") {
+                } else if(personId === viewerPersonId && isSelectable === "true" && absenceType === "SICK_NOTE" && absenceId !== "-1") {
                     holidayService.navigateToSickNote(absenceId);
-                } else if(isSelectable === "true" && isWithinInterval(dateThis, dateFrom, dateTo)) {
-                    holidayService.bookHoliday(dateFrom, dateTo, personId);
+                } else if(isSelectable === "true" && isValidDate(dateFrom) && isValidDate(dateTo) && isWithinInterval(dateThis, { start: dateFrom, end: dateTo })) {
+                    holidayService.bookHoliday(dateFrom, dateTo);
                 }
 
             },
@@ -726,7 +773,7 @@ if (window.yados && window.yados.timelineDepartmentId){
 
                 $.when(
                     holidayService.fetchAbsences   ( getYear(date) )
-                ).then(view.displayPrev);
+                ).then(view.displayPrevious);
             }
         };
 
@@ -761,12 +808,19 @@ if (window.yados && window.yados.timelineDepartmentId){
 
         function refreshDatepicker() {
 
-            var from = selectionFrom();
-            var to   = selectionTo();
+            var start = selectionFrom();
+            var end   = selectionTo();
+
+            const startIsValid = isValidDate(start);
+            const endIsValid = isValidDate(end);
 
             $('.' + CSS.day).each(function() {
-                var d = parseISO( $(this).data(DATA.date) );
-                select(this, isWithinInterval(d, from, to));
+                if (!startIsValid || !endIsValid) {
+                  select(this, false);
+                } else {
+                  const date = parseISO($(this).data(DATA.date));
+                  select(this, isWithinInterval(date, { start, end }));
+                }
             });
         }
 
@@ -793,7 +847,7 @@ if (window.yados && window.yados.timelineDepartmentId){
                 $datepicker.on('mouseover', '.' + CSS.day , datepickerHandlers.mouseover);
                 $datepicker.on('click'    , '.' + CSS.day , datepickerHandlers.click    );
 
-                $datepicker.on('click'    , '.' + CSS.prev, datepickerHandlers.clickPrev);
+                $datepicker.on('click'    , '.' + CSS.previous, datepickerHandlers.clickPrevious);
                 $datepicker.on('click'    , '.' + CSS.next, datepickerHandlers.clickNext);
 
 
