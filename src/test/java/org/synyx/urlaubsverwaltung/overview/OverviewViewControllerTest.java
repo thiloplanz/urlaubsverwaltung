@@ -112,6 +112,7 @@ public class OverviewViewControllerTest {
         when(personService.getPersonByID(SOME_PERSON_ID)).thenReturn(Optional.of(person));
 
         final Person signedInUser = somePerson();
+        signedInUser.setId(-199);
         when(personService.getSignedInUser()).thenReturn(signedInUser);
 
         when(departmentService.isSignedInUserAllowedToAccessPersonData(signedInUser, person)).thenReturn(false);
@@ -128,6 +129,7 @@ public class OverviewViewControllerTest {
         when(personService.getPersonByID(SOME_PERSON_ID)).thenReturn(Optional.of(person));
 
         final Person signedInUser = somePerson();
+        signedInUser.setId(-199);
         when(personService.getSignedInUser()).thenReturn(signedInUser);
 
         when(departmentService.isSignedInUserAllowedToAccessPersonData(signedInUser, person)).thenReturn(true);
@@ -146,9 +148,12 @@ public class OverviewViewControllerTest {
         when(personService.getPersonByID(SOME_PERSON_ID)).thenReturn(Optional.of(person));
 
         final Person signedInUser = somePerson();
+        signedInUser.setId(-199);
         when(personService.getSignedInUser()).thenReturn(signedInUser);
 
         when(departmentService.isSignedInUserAllowedToAccessPersonData(signedInUser, person)).thenReturn(true);
+        when(departmentService.getRelevantDepartments(person)).thenReturn(Collections.emptyList());
+        when(departmentService.getRelevantDepartments(signedInUser)).thenReturn(Collections.emptyList());
 
         final int expectedYear = 1987;
 
