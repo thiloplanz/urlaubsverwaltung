@@ -3,19 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-  <changeSet author="thilo" id="add_column_maximumMonthsToApplyForLeaveRetroactively_to_settings">
+  <changeSet author="thilo" id="YADOS_add_column_maximumMonthsToApplyForLeaveRetroactively_to_settings">
 
     <preConditions>
       <tableExists tableName="Settings"/>
     </preConditions>
 
     <addColumn tableName="Settings">
-      <column name="maximumMonthsToApplyForLeaveRetroactively" type="INT(10)"/>
+      <column name="retroactiveApplicationCutoff" type="DATE"/>
     </addColumn>
-
-    <sql>
-      UPDATE Settings SET maximumMonthsToApplyForLeaveRetroactively = maximumMonthsToApplyForLeaveInAdvance;
-    </sql>
 
   </changeSet>
 

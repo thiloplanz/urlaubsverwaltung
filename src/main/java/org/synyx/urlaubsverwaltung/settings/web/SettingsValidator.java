@@ -17,6 +17,8 @@ import org.synyx.urlaubsverwaltung.settings.Settings;
 import org.synyx.urlaubsverwaltung.settings.WorkingTimeSettings;
 import org.synyx.urlaubsverwaltung.web.MailAddressValidationUtil;
 
+import java.time.LocalDate;
+
 
 @Component
 public class SettingsValidator implements Validator {
@@ -131,12 +133,10 @@ public class SettingsValidator implements Validator {
             errors.rejectValue("absenceSettings.maximumMonthsToApplyForLeaveInAdvance", ERROR_INVALID_ENTRY);
         }
 
-        Integer maximumMonthsToApplyForLeaveRetroactively = absenceSettings.getMaximumMonthsToApplyForLeaveRetroactively();
+        LocalDate retroCutoff = absenceSettings.getRetroactiveApplicationCutoff();
 
-        if (maximumMonthsToApplyForLeaveRetroactively == null) {
-            errors.rejectValue("absenceSettings.maximumMonthsToApplyForLeaveRetroactively", ERROR_MANDATORY_FIELD);
-        } else if (maximumMonthsToApplyForLeaveRetroactively <= 0) {
-            errors.rejectValue("absenceSettings.maximumMonthsToApplyForLeaveRetroactively", ERROR_INVALID_ENTRY);
+        if (retroCutoff != null && retroCutoff.isAfter(LocalDate.now())) {
+            errors.rejectValue("absenceSettings.retroactiveApplicationCutoff", ERROR_INVALID_ENTRY);
         }
 
 

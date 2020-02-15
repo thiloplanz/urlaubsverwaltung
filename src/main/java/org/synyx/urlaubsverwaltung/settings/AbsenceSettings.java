@@ -1,6 +1,7 @@
 package org.synyx.urlaubsverwaltung.settings;
 
 import javax.persistence.Embeddable;
+import java.time.LocalDate;
 
 
 /**
@@ -22,7 +23,7 @@ public class AbsenceSettings {
     /**
      * Specifies how many months after the fact a person can apply for leave retroactively.
      */
-    private Integer maximumMonthsToApplyForLeaveRetroactively = 12; // NOSONAR
+    private LocalDate retroactiveApplicationCutoff = null; // NOSONAR
 
     /**
      * Specifies the maximal period of sick pay in days.
@@ -57,9 +58,9 @@ public class AbsenceSettings {
         return maximumMonthsToApplyForLeaveInAdvance;
     }
 
-    public Integer getMaximumMonthsToApplyForLeaveRetroactively() {
+    public LocalDate getRetroactiveApplicationCutoff() {
 
-        return maximumMonthsToApplyForLeaveRetroactively;
+        return retroactiveApplicationCutoff;
     }
 
 
@@ -86,9 +87,8 @@ public class AbsenceSettings {
         this.maximumMonthsToApplyForLeaveInAdvance = maximumMonthsToApplyForLeaveInAdvance;
     }
 
-    public void setMaximumMonthsToApplyForLeaveRetroactively(Integer maximumMonthsToApplyForLeaveRetroactively) {
-
-        this.maximumMonthsToApplyForLeaveRetroactively = maximumMonthsToApplyForLeaveRetroactively;
+    public void setRetroactiveApplicationCutoff(LocalDate cutoff) {
+        this.retroactiveApplicationCutoff = cutoff;
     }
 
 
