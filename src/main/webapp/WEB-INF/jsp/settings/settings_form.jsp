@@ -21,6 +21,11 @@
 
 <body>
 
+<c:set var="DATE_PATTERN">
+    <spring:message code="pattern.date"/>
+</c:set>
+
+
 <uv:menu/>
 
 <spring:url var="URL_PREFIX" value="/web"/>
@@ -143,6 +148,21 @@
                                                     type="number" step="1"/>
                                         <span class="help-inline"><form:errors
                                             path="absenceSettings.maximumMonthsToApplyForLeaveInAdvance"
+                                            cssClass="error"/></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4"
+                                           for="absenceSettings.retroactiveApplicationCutoff">
+                                        <spring:message code='settings.vacation.retroactiveApplicationCutoff'/>:
+                                    </label>
+                                    <div class="col-md-8">
+                                        <form:input id="absenceSettings.retroactiveApplicationCutoff"
+                                                    path="absenceSettings.retroactiveApplicationCutoff"
+                                                    class="form-control" cssErrorClass="form-control error"
+                                                    autocomplete="off" placeholder="${DATE_PATTERN}" />
+                                        <span class="help-inline"><form:errors
+                                            path="absenceSettings.retroactiveApplicationCutoff"
                                             cssClass="error"/></span>
                                     </div>
                                 </div>

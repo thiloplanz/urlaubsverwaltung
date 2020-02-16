@@ -63,6 +63,7 @@ public class ApplicationForLeaveFormValidatorTest {
         settingsService = mock(SettingsService.class);
         settings = new Settings();
         settings.getWorkingTimeSettings().setOvertimeActive(true);
+        settings.getAbsenceSettings().setRetroactiveApplicationCutoff(LocalDate.now().minusMonths(3));
         when(settingsService.getSettings()).thenReturn(settings);
 
         calendarService = mock(WorkDaysService.class);
