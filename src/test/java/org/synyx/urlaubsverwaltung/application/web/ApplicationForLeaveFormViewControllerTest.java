@@ -12,6 +12,7 @@ import org.springframework.validation.Errors;
 import org.synyx.urlaubsverwaltung.account.domain.Account;
 import org.synyx.urlaubsverwaltung.account.service.AccountService;
 import org.synyx.urlaubsverwaltung.application.domain.Application;
+import org.synyx.urlaubsverwaltung.application.domain.VacationCategory;
 import org.synyx.urlaubsverwaltung.application.domain.VacationType;
 import org.synyx.urlaubsverwaltung.application.service.ApplicationInteractionService;
 import org.synyx.urlaubsverwaltung.application.service.VacationTypeService;
@@ -89,6 +90,7 @@ public class ApplicationForLeaveFormViewControllerTest {
         when(accountService.getHolidaysAccount(year, person)).thenReturn(Optional.of(new Account()));
 
         final VacationType vacationType = new VacationType();
+        vacationType.setCategory(VacationCategory.HOLIDAY);
         when(vacationTypeService.getVacationTypes()).thenReturn(singletonList(vacationType));
 
         final WorkingTimeSettings workingTimeSettings = new WorkingTimeSettings();
@@ -111,6 +113,7 @@ public class ApplicationForLeaveFormViewControllerTest {
         when(accountService.getHolidaysAccount(year, person)).thenReturn(Optional.of(new Account()));
 
         final VacationType vacationType = new VacationType();
+        vacationType.setCategory(VacationCategory.HOLIDAY);
         when(vacationTypeService.getVacationTypesFilteredBy(OVERTIME)).thenReturn(singletonList(vacationType));
 
         final WorkingTimeSettings workingTimeSettings = new WorkingTimeSettings();

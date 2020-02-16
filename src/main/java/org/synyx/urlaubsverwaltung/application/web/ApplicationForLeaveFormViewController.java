@@ -38,6 +38,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.time.ZoneOffset.UTC;
@@ -163,6 +164,9 @@ public class ApplicationForLeaveFormViewController {
         if (!overtimeActive) {
             vacationTypes = vacationTypeService.getVacationTypesFilteredBy(VacationCategory.OVERTIME);
         }
+        // YADOS
+        vacationTypes = vacationTypes.stream().filter(v -> !v.isOfCategory(VacationCategory.SPECIALLEAVE) && !v.isOfCategory(VacationCategory.UNPAIDLEAVE)).collect(Collectors.toList());
+
         model.addAttribute("vacationTypes", vacationTypes);
 
         model.addAttribute("application", appForm);
