@@ -10,6 +10,8 @@ import org.synyx.urlaubsverwaltung.application.domain.VacationCategory;
 import org.synyx.urlaubsverwaltung.application.service.CalculationService;
 import org.synyx.urlaubsverwaltung.overtime.OvertimeService;
 import org.synyx.urlaubsverwaltung.period.DayLength;
+import org.synyx.urlaubsverwaltung.person.Person;
+import org.synyx.urlaubsverwaltung.person.Role;
 import org.synyx.urlaubsverwaltung.settings.AbsenceSettings;
 import org.synyx.urlaubsverwaltung.settings.Settings;
 import org.synyx.urlaubsverwaltung.settings.SettingsService;
@@ -100,13 +102,17 @@ public class ApplicationForLeaveFormValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-
         ApplicationForLeaveForm applicationForm = (ApplicationForLeaveForm) target;
+        validate(applicationForm, applicationForm.getPerson(), errors);
+    }
+
+    // YADOS: Need to have this method, because Applicant could be different from form.Person
+    void validate(ApplicationForLeaveForm applicationForm, Person applicant, Errors errors){
 
         Settings settings = settingsService.getSettings();
 
         // check if date fields are valid
-        validateDateFields(applicationForm, settings, errors);
+        validateDateFields(applicationForm, applicant, settings, errors);
 
         // check hours
         validateHours(applicationForm, settings, errors);
@@ -206,7 +212,7 @@ public class ApplicationForLeaveFormValidator implements Validator {
         }
     }
 
-    private void validateDateFields(ApplicationForLeaveForm applicationForLeave, Settings settings, Errors errors) {
+    private void validateDateFields(ApplicationForLeaveForm applicationForLeave, Person applicant, Settings settings, Errors errors) {
 
         LocalDate startDate = applicationForLeave.getStartDate();
         LocalDate endDate = applicationForLeave.getEndDate();
@@ -215,7 +221,7 @@ public class ApplicationForLeaveFormValidator implements Validator {
         validateNotNull(endDate, ATTRIBUTE_END_DATE, errors);
 
         if (startDate != null && endDate != null) {
-            validatePeriod(startDate, endDate, applicationForLeave.getDayLength(), settings, errors);
+            validatePeriod(startDate, endDate, applicationForLeave.getDayLength(), applicant, settings, errors);
             validateTime(applicationForLeave.getStartTime(), applicationForLeave.getEndTime(), errors);
         }
     }
@@ -230,7 +236,7 @@ public class ApplicationForLeaveFormValidator implements Validator {
     }
 
 
-    private void validatePeriod(LocalDate startDate, LocalDate endDate, DayLength dayLength, Settings settings,
+    private void validatePeriod(LocalDate startDate, LocalDate endDate, DayLength dayLength, Person applicant, Settings settings,
                                 Errors errors) {
 
         // ensure that startDate < endDate
@@ -240,7 +246,9 @@ public class ApplicationForLeaveFormValidator implements Validator {
             AbsenceSettings absenceSettings = settings.getAbsenceSettings();
 
             validateNotTooFarInTheFuture(endDate, absenceSettings, errors);
-            validateNotTooFarInThePast(startDate, absenceSettings, errors);
+            if (!applicant.hasRole(Role.OFFICE)) {
+                validateNotTooFarInThePast(startDate, absenceSettings, errors);
+            }
             validateSameDayIfHalfDayPeriod(startDate, endDate, dayLength, errors);
         }
     }

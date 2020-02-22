@@ -119,8 +119,9 @@ public class ApplicationForLeaveFormViewController {
     public String newApplication(@ModelAttribute("application") ApplicationForLeaveForm appForm, Errors errors,
                                  Model model, RedirectAttributes redirectAttributes) {
         LOG.info("POST new application received: {}", appForm);
+        final Person applier = personService.getSignedInUser();
 
-        applicationForLeaveFormValidator.validate(appForm, errors);
+        applicationForLeaveFormValidator.validate(appForm, applier, errors);
 
         if (errors.hasErrors()) {
             prepareApplicationForLeaveForm(appForm.getPerson(), appForm, model);
@@ -132,7 +133,6 @@ public class ApplicationForLeaveFormViewController {
         }
 
         final Application application = appForm.generateApplicationForLeave();
-        final Person applier = personService.getSignedInUser();
         final Application savedApplicationForLeave = applicationInteractionService.apply(application, applier, Optional.ofNullable(appForm.getComment()));
 
         LOG.info("new application with success applied {}", savedApplicationForLeave);
