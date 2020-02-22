@@ -75,15 +75,12 @@
     <div class="container">
 
         <div class="row">
-
             <div class="col-xs-12">
                 <%@include file="include/overview_header.jsp" %>
             </div>
-
         </div>
 
         <div class="row">
-
             <div class="col-xs-12 col-sm-12 col-md-4">
                 <uv:person person="${person}" nameIsNoLink="${true}"/>
             </div>
@@ -96,9 +93,9 @@
                 <uv:account-left account="${account}" vacationDaysLeft="${vacationDaysLeft}"
                                  beforeApril="${beforeApril}"/>
             </div>
-
         </div>
 
+        <!-- Overtime -->
         <c:if test="${settings.workingTimeSettings.overtimeActive}">
             <div class="row">
                 <div class="col-xs-12">
@@ -127,9 +124,10 @@
             </div>
         </c:if>
 
+        <!-- Calendar -->
         <div class="row">
             <div class="col-xs-12">
-                <legend >
+                <legend id="vacation">
                      <div class="legend-dropdown dropdown">
                              <c:choose>
                                 <c:when test="${timelineDepartment == null}">
@@ -172,6 +170,7 @@
             </div>
         </div>
 
+        <!-- Vacation -->
         <div class="row">
             <div class="col-xs-12">
                 <legend id="vacation">
@@ -222,11 +221,13 @@
 
             <div class="col-xs-12 col-sm-12 col-md-6">
                 <div class="box">
-                    <span class="box-icon bg-yellow hidden-print"><i class="fa fa-flag-o" aria-hidden="true"></i></span>
+                    <span class="box-icon bg-yellow hidden-print">
+                        <i class="fa fa-flag-o" aria-hidden="true"></i>
+                    </span>
                     <span class="box-text">
                         <spring:message code="overview.vacations.otherLeave" arguments="${otherLeave}"/>
-                        <i class="fa fa-check positive" aria-hidden="true"></i> <spring:message code="overview.vacations.otherLeaveAllowed"
-                                                                             arguments="${otherLeaveAllowed}"/>
+                        <i class="fa fa-check positive" aria-hidden="true"></i>
+                        <spring:message code="overview.vacations.otherLeaveAllowed" arguments="${otherLeaveAllowed}"/>
                     </span>
                 </div>
             </div>
