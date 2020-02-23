@@ -221,11 +221,11 @@ public class ApplicationForLeaveFormViewControllerTest {
         when(settingsService.getSettings()).thenReturn(someSettings());
 
         doAnswer(invocation -> {
-            Errors errors = invocation.getArgument(1);
+            Errors errors = invocation.getArgument(2);
             errors.rejectValue("reason", "errors");
             errors.reject("globalErrors");
             return null;
-        }).when(applicationForLeaveFormValidator).validate(any(), any());
+        }).when(applicationForLeaveFormValidator).validate(any(), any(), any());
 
         perform(post("/web/application"))
             .andExpect(model().attribute("errors", instanceOf(Errors.class)))
