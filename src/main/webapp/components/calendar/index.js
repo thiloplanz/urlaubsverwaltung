@@ -137,8 +137,8 @@ if (window.yados && window.yados.timelineDepartmentId){
                 isSickDayNoon: function(date, personId) {
                   return !isWeekend(date) && holidayService.isSickDayNoon(date, personId);
                 },
-                title: function(date) {
-                  return holidayService.getDescription(date);
+                title: function(date, personId) {
+                  return holidayService.getDescription(date, personId);
                 },
                 absenceId: function(date, personId) {
                   return holidayService.getAbsenceId(date, personId);
@@ -576,9 +576,9 @@ if (window.yados && window.yados.timelineDepartmentId){
                     assert.isToday                          (date) ? CSS.dayToday                          : '',
                     assert.isWeekend                        (date) ? CSS.dayWeekend                        : '',
                     assert.isPast                           (date) ? CSS.dayPast                           : '',
-                    assert.isPublicHolidayFull              (date) ? CSS.dayPublicHolidayFull              : '',
-                    assert.isPublicHolidayMorning           (date) ? CSS.dayPublicHolidayMorning           : '',
-                    assert.isPublicHolidayNoon              (date) ? CSS.dayPublicHolidayNoon              : '',
+                    assert.isPublicHolidayFull              (date, personId) ? CSS.dayPublicHolidayFull              : '',
+                    assert.isPublicHolidayMorning           (date, personId) ? CSS.dayPublicHolidayMorning           : '',
+                    assert.isPublicHolidayNoon              (date, personId) ? CSS.dayPublicHolidayNoon              : '',
                     assert.isPersonalHolidayFull            (date, personId) ? CSS.dayPersonalHolidayFull            : '',
                     assert.isPersonalHolidayFullApproved    (date, personId) ? CSS.dayPersonalHolidayFullApproved    : '',
                     assert.isPersonalHolidayMorning         (date, personId) ? CSS.dayPersonalHolidayMorning         : '',
