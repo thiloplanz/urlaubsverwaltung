@@ -737,10 +737,11 @@ if (window.yados && window.yados.timelineDepartmentId){
                 var absenceId = $(this).attr('data-datepicker-absence-id');
                 var absenceType = $(this).attr('data-datepicker-absence-type');
                 const viewerPersonId = holidayService.viewerPersonId;
+                const canSee = personId === viewerPersonId || window.uv.isOffice;
 
-                if(personId === viewerPersonId && isSelectable === "true" && absenceType === "VACATION" && absenceId !== "-1") {
+                if(canSee && isSelectable === "true" && absenceType === "VACATION" && absenceId !== "-1") {
                     holidayService.navigateToApplicationForLeave(absenceId);
-                } else if(personId === viewerPersonId && isSelectable === "true" && absenceType === "SICK_NOTE" && absenceId !== "-1") {
+                } else if(canSee && isSelectable === "true" && absenceType === "SICK_NOTE" && absenceId !== "-1") {
                     holidayService.navigateToSickNote(absenceId);
                 } else if(isSelectable === "true" && isValidDate(dateFrom) && isValidDate(dateTo) && isWithinInterval(dateThis, { start: dateFrom, end: dateTo })) {
                     holidayService.bookHoliday(dateFrom, dateTo);

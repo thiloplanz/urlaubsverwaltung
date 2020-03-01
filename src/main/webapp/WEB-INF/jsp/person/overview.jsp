@@ -19,6 +19,7 @@
     <script>
         window.uv = {};
         window.uv.personId = '<c:out value="${person.id}" />';
+        window.uv.isOffice = '<c:out value="${person.office}" />';
         window.uv.webPrefix = "<spring:url value='/web' />";
         window.uv.apiPrefix = "<spring:url value='/api' />";
         // 0=sunday, 1=monday

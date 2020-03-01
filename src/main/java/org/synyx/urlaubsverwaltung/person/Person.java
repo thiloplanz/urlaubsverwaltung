@@ -105,6 +105,10 @@ public class Person extends AbstractPersistable<Integer> {
         return getPermissions().stream().anyMatch(permission -> permission.equals(role));
     }
 
+    public boolean isOffice() {
+        return hasRole(Role.OFFICE);
+    }
+
     public Collection<MailNotification> getNotifications() {
         if (notifications == null) {
             notifications = Collections.emptyList();
