@@ -15,7 +15,6 @@ import org.synyx.urlaubsverwaltung.api.ResponseWrapper;
 import org.synyx.urlaubsverwaltung.api.RestApiDateFormat;
 import org.synyx.urlaubsverwaltung.api.RestControllerAdviceMarker;
 import org.synyx.urlaubsverwaltung.application.domain.Application;
-import org.synyx.urlaubsverwaltung.application.domain.ApplicationStatus;
 import org.synyx.urlaubsverwaltung.application.service.ApplicationService;
 import org.synyx.urlaubsverwaltung.calendarintegration.absence.AbsenceType;
 import org.synyx.urlaubsverwaltung.department.Department;
@@ -23,7 +22,6 @@ import org.synyx.urlaubsverwaltung.department.DepartmentService;
 import org.synyx.urlaubsverwaltung.holiday.api.PublicHolidayResponse;
 import org.synyx.urlaubsverwaltung.person.Person;
 import org.synyx.urlaubsverwaltung.person.PersonService;
-import org.synyx.urlaubsverwaltung.security.SecurityRules;
 import org.synyx.urlaubsverwaltung.settings.FederalState;
 import org.synyx.urlaubsverwaltung.sicknote.SickNote;
 import org.synyx.urlaubsverwaltung.sicknote.SickNoteService;
@@ -37,6 +35,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Integer.parseInt;
+import static java.util.stream.Collectors.toList;
+import static org.synyx.urlaubsverwaltung.application.domain.ApplicationStatus.ALLOWED;
+import static org.synyx.urlaubsverwaltung.application.domain.ApplicationStatus.TEMPORARY_ALLOWED;
+import static org.synyx.urlaubsverwaltung.application.domain.ApplicationStatus.WAITING;
+import static org.synyx.urlaubsverwaltung.security.SecurityRules.IS_BOSS_OR_OFFICE;
 
 @RestControllerAdviceMarker
 @Api("Absences: Get all absences for a certain period")
@@ -71,7 +74,9 @@ public class AbsenceApiController {
         notes = "Get all absences for a certain period and person"
     )
     @GetMapping(value="/absences", params="person")
-    @PreAuthorize(SecurityRules.IS_BOSS_OR_OFFICE + " or @userApiMethodSecurity.isSamePersonId(authentication, #personId)")
+    @PreAuthorize(IS_BOSS_OR_OFFICE +
+        " or @userApiMethodSecurity.isSamePersonId(authentication, #personId)" +
+        " or @userApiMethodSecurity.isInDepartmentOfDepartmentHead(authentication, #personId)")
     public ResponseWrapper<DayAbsenceList> personsVacations(
         @ApiParam(value = "Year to get the absences for", defaultValue = RestApiDateFormat.EXAMPLE_YEAR)
         @RequestParam("year")
@@ -86,15 +91,14 @@ public class AbsenceApiController {
         @RequestParam(value = "type", required = false)
             String type) {
 
+        final Optional<Person> optionalPerson = personService.getPersonByID(personId);
 
-        Optional<Person> optionalPerson = personService.getPersonByID(personId);
-
-        if (!optionalPerson.isPresent()) {
+        if (optionalPerson.isEmpty()) {
             throw new IllegalArgumentException("No person found for ID=" + personId);
         }
 
-        List<DayAbsence> absences = new ArrayList<>();
-        Person person = optionalPerson.get();
+        final List<DayAbsence> absences = new ArrayList<>();
+        final Person person = optionalPerson.get();
 
         LocalDate startDate;
         LocalDate endDate;
@@ -116,22 +120,15 @@ public class AbsenceApiController {
         return new ResponseWrapper<>(new DayAbsenceList(absences));
     }
 
-
     private static LocalDate getStartDate(String year, Optional<String> optionalMonth) {
-
         return optionalMonth.map(s -> DateUtil.getFirstDayOfMonth(parseInt(year), parseInt(s)))
             .orElseGet(() -> DateUtil.getFirstDayOfYear(parseInt(year)));
-
     }
-
 
     private static LocalDate getEndDate(String year, Optional<String> optionalMonth) {
-
         return optionalMonth.map(s -> DateUtil.getLastDayOfMonth(parseInt(year), parseInt(s)))
             .orElseGet(() -> DateUtil.getLastDayOfYear(parseInt(year)));
-
     }
-
 
     private List<DayAbsence> getVacations(LocalDate start, LocalDate end, Person person) {
 
@@ -141,10 +138,10 @@ public class AbsenceApiController {
             person)
             .stream()
             .filter(application ->
-                application.hasStatus(ApplicationStatus.WAITING)
-                    || application.hasStatus(ApplicationStatus.TEMPORARY_ALLOWED)
-                    || application.hasStatus(ApplicationStatus.ALLOWED))
-            .collect(Collectors.toList());
+                application.hasStatus(WAITING)
+                    || application.hasStatus(TEMPORARY_ALLOWED)
+                    || application.hasStatus(ALLOWED))
+            .collect(toList());
 
         for (Application application : applications) {
             LocalDate startDate = application.getStartDate();
@@ -173,7 +170,7 @@ public class AbsenceApiController {
         List<SickNote> sickNotes = sickNoteService.getByPersonAndPeriod(person, start, end)
             .stream()
             .filter(SickNote::isActive)
-            .collect(Collectors.toList());
+            .collect(toList());
 
         for (SickNote sickNote : sickNotes) {
             LocalDate startDate = sickNote.getStartDate();

@@ -1,4 +1,13 @@
-### master
+### [urlaubsverwaltung-3.1.2](https://github.com/synyx/urlaubsverwaltung/releases/tag/urlaubsverwaltung-3.1.2)
+* Fix that a multiple day event ends one day to early [#980](https://github.com/synyx/urlaubsverwaltung/pull/980)
+* Fix to add au for one day not in sick note period [#976](https://github.com/synyx/urlaubsverwaltung/pull/976)
+* Fix to use default form action instead of google handshake in settings [#975](https://github.com/synyx/urlaubsverwaltung/pull/975)
+* Fix to allow vacation overview for department head [#974](https://github.com/synyx/urlaubsverwaltung/pull/974)
+* Fix timezone selection for exchange calendar [#985](https://github.com/synyx/urlaubsverwaltung/pull/985)
+* Reorder the css loading to fix wrong color of past months for sick notes [#981](https://github.com/synyx/urlaubsverwaltung/pull/981)
+* Reorder the css loading to fix wrong color of past months for overtime [#982](https://github.com/synyx/urlaubsverwaltung/pull/982)
+
+### [urlaubsverwaltung-3.1.1](https://github.com/synyx/urlaubsverwaltung/releases/tag/urlaubsverwaltung-3.1.1)
 * Fix hidden company calendar section after interacting with department calendar [#968](https://github.com/synyx/urlaubsverwaltung/pull/968)
 * Fix to use Date in VEvent instead of DateTime for multiple day events [#966](https://github.com/synyx/urlaubsverwaltung/pull/966)
 * Fix wrong company calendar url generation [#965](https://github.com/synyx/urlaubsverwaltung/pull/965) [#963](https://github.com/synyx/urlaubsverwaltung/issues/963)
