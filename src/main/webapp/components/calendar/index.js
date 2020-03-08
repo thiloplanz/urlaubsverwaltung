@@ -726,25 +726,27 @@ if (window.yados && window.yados.timelineDepartmentId){
 
             click: function() {
 
-                var dateFrom = selectionFrom();
-                var dateTo   = selectionTo  ();
-
-                var dateThis = getDateFromElement(this);
-
                 var isSelectable = $(this).attr("data-datepicker-selectable");
-                var personId = +($(this).closest('tr').attr('data-datepicker-person'))
+                if (isSelectable === "true") {
+                  var dateFrom = selectionFrom();
+                  var dateTo   = selectionTo  ();
+                  var dateThis = getDateFromElement(this);
 
-                var absenceId = $(this).attr('data-datepicker-absence-id');
-                var absenceType = $(this).attr('data-datepicker-absence-type');
-                const viewerPersonId = holidayService.viewerPersonId;
-                const canSee = personId === viewerPersonId || window.uv.isOffice;
+                  var personId = +($(this).closest('tr').attr('data-datepicker-person'))
 
-                if(canSee && isSelectable === "true" && absenceType === "VACATION" && absenceId !== "-1") {
-                    holidayService.navigateToApplicationForLeave(absenceId);
-                } else if(canSee && isSelectable === "true" && absenceType === "SICK_NOTE" && absenceId !== "-1") {
-                    holidayService.navigateToSickNote(absenceId);
-                } else if(isSelectable === "true" && isValidDate(dateFrom) && isValidDate(dateTo) && isWithinInterval(dateThis, { start: dateFrom, end: dateTo })) {
-                    holidayService.bookHoliday(dateFrom, dateTo);
+                  var absenceId = $(this).attr('data-datepicker-absence-id');
+                  var absenceType = $(this).attr('data-datepicker-absence-type');
+                  const viewerPersonId = holidayService.viewerPersonId;
+                  const canSee = personId === viewerPersonId || window.uv.isOffice;
+
+                  if(canSee && absenceType === "VACATION" && absenceId !== "-1") {
+                      holidayService.navigateToApplicationForLeave(absenceId);
+                  } else if(canSee && absenceType === "SICK_NOTE" && absenceId !== "-1") {
+                      holidayService.navigateToSickNote(absenceId);
+                  } else if(personId === viewerPersonId && isValidDate(dateFrom) && isValidDate(dateTo) && isWithinInterval(dateThis, { start: dateFrom, end: dateTo })) {
+                      holidayService.bookHoliday(dateFrom, dateTo);
+                  }
+                  clearSelection();
                 }
 
             },
